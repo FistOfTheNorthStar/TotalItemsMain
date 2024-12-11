@@ -1,0 +1,109 @@
+<div data-controller="toggle-menu">
+  <%# Navigation %>
+  <nav class="bg-white border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <span class="text-l font-bold text-blue-600">Book your tickets now!</span>
+        </div>
+
+        <%# Desktop Menu %>
+        <div class="hidden sm:flex sm:items-center sm:space-x-8">
+          <%= link_to "Concerts", "#", class: "text-gray-500 hover:text-gray-900" %>
+          <%= link_to "About", "#", class: "text-gray-500 hover:text-gray-900" %>
+          <%= link_to "Contact", "#", class: "text-gray-500 hover:text-gray-900" %>
+          <%= link_to "Book Now", concerts_path, class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" %>
+        </div>
+
+        <%# Mobile Menu Button %>
+        <div class="sm:hidden flex items-center">
+          <button data-action="click->toggle-menu#toggleMenu" class="text-gray-500 hover:text-gray-900">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <%# Mobile Menu %>
+    <div data-toggle-menu-target="mobileMenu" class="hidden sm:hidden">
+      <div class="px-2 pt-2 pb-3 space-y-1">
+        <%= link_to "Concerts", concerts_path, class: "block px-3 py-2 text-gray-500 hover:text-gray-900" %>
+        <%= link_to "About", "#", class: "block px-3 py-2 text-gray-500 hover:text-gray-900" %>
+        <%= link_to "Contact", "#", class: "block px-3 py-2 text-gray-500 hover:text-gray-900" %>
+      </div>
+    </div>
+  </nav>
+
+  <%# Hero Section %>
+  <div class="relative isolate bg-white">
+    <div class="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:flex lg:items-center lg:gap-x-10 lg:px-8 lg:py-40">
+      <div class="mx-auto max-w-2xl lg:mx-0 lg:flex-auto">
+        <h1 class="max-w-lg text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+          Live Event
+        </h1>
+        <p class="mt-6 text-lg leading-8 text-gray-600">
+          You have 5 minutes time to buy your ticket!
+        </p>
+        <div class="mt-10 flex items-center gap-x-6">
+          <%= link_to "View Concerts", concerts_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500" %>
+          <%= link_to "Learn more", "#", class: "text-sm font-semibold leading-6 text-gray-900" %>
+        </div>
+      </div>
+      <div class="mt-16 sm:mt-24 lg:mt-0 lg:flex-shrink-0">
+        <%= image_tag "ticket_main.png", class: "w-96 h-96 rounded-3xl shadow-lg", alt: "TicketMain" %>
+      </div>
+    </div>
+  </div>
+
+  <%# Features Section %>
+  <div class="bg-gray-50 py-24 sm:py-32">
+    <div class="mx-auto max-w-7xl px-6 lg:px-8">
+      <div class="mx-auto max-w-2xl text-center">
+        <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Everything You Need</h2>
+        <p class="mt-6 text-lg leading-8 text-gray-600">
+          Tickets are limited, book now!
+        </p>
+      </div>
+
+      <div class="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-4xl">
+        <div class="grid grid-cols-1 gap-y-8 lg:grid-cols-3 lg:gap-x-8">
+          <%# Feature 1 %>
+          <div class="bg-white p-8 rounded-lg shadow">
+            <div class="text-blue-600 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold">Live Events</h3>
+            <p class="mt-2 text-gray-600">Check what is still available, tickets selling fast.</p>
+          </div>
+
+          <%# Feature 2 %>
+          <div class="bg-white p-8 rounded-lg shadow">
+            <div class="text-blue-600 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold">Easy Booking</h3>
+            <p class="mt-2 text-gray-600">If our servers are busy you can wait in queue, background music not provided.</p>
+          </div>
+
+          <%# Feature 3 %>
+          <div class="bg-white p-8 rounded-lg shadow">
+            <div class="text-blue-600 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold">QR Code tickets!</h3>
+            <p class="mt-2 text-gray-600">Tickets are sent to your email and just scan the QR at the door.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%= render "layouts/footer" %>
+</div>

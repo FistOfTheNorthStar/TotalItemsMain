@@ -1,0 +1,33 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+    <%= image_tag "concert_default.jpg", class: "w-full h-96 object-cover" %>
+
+    <div class="p-8">
+      <h1 class="text-3xl font-bold mb-4"><%= @concert.name %></h1>
+      <p class="text-gray-600 mb-6"><%= @concert.description %></p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="p-4 bg-gray-50 rounded-lg">
+          <h3 class="font-semibold text-gray-600">Date</h3>
+          <p class="text-lg"><%= @concert.date.strftime("%B %d, %Y") %></p>
+        </div>
+
+        <div class="p-4 bg-gray-50 rounded-lg">
+          <h3 class="font-semibold text-gray-600">Price</h3>
+          <p class="text-lg">$<%= @concert.price %></p>
+        </div>
+
+        <div class="p-4 bg-gray-50 rounded-lg">
+          <h3 class="font-semibold text-gray-600">Available Tickets</h3>
+          <p class="text-lg"><%= @concert.available_tickets %></p>
+        </div>
+      </div>
+
+      <% if @concert.available_tickets > 0 %>
+        <%= button_to "Reserve Tickets", new_concert_reservation_path(@concert), method: :get, class: "w-full md:w-auto px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700" %>
+      <% else %>
+        <p class="text-red-600 font-bold">Sold Out</p>
+      <% end %>
+    </div>
+  </div>
+</div>
