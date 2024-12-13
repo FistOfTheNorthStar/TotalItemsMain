@@ -1,0 +1,65 @@
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div class="text-center">
+        <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+          You're in line!
+        </h2>
+        <%#= javascript_include_tag "controllers/queue_status_controller", data: { controller: "queue-status", position: @position } %>
+
+<!--        <div data-controller="queue-status" data-queue-status-position="<%#= @position.position %>" data-queue-status-reservation-id="<%#= @reservation.id %>">-->
+<!--          <p class="mt-2 text-sm text-gray-600">-->
+<!--            Your position: <%#= @position.position %>-->
+<!--          </p>-->
+<!--          <div data-queue-status-target="status"></div>-->
+<!--        </div>-->
+
+<!--        <div data-controller="queue-status"-->
+<!--             data-queue-status-position="<%#= @position %>"-->
+<!--             data-queue-status-reservation-id="<%#= @reservation.id %>">-->
+<!--          <p class="mt-2 text-sm text-gray-600">-->
+<!--            Your position: <span data-queue-status-target="position"><%#= @position.position %></span>-->
+<!--          </p>-->
+<!--          <div data-queue-status-target="status"></div>-->
+<!--        </div>-->
+
+<!--        <div data-controller="queue-status">-->
+<!--  <span data-queue-status-target="status">-->
+<!--    <p class="mt-2 text-sm text-gray-600">-->
+<!--            Your position: <span ><%#= @position.position %></span>-->
+<!--          </p>-->
+<!--    </span>-->
+<!--        </div>-->
+
+        <div data-controller="hello">
+          Hello, Stimuslus!
+        </div>
+
+        <div data-controller="queue-status">
+          <span id="queue-status">Loading...</span>
+        </div>
+
+
+        <%#= javascript_include_tag "controllers/queue_status_controller", data: { controller: "queue-status" } %>
+
+<!--        <div data-controller="queue-status" data-queue-status-position="<%#= @position %>" data-queue-status-reservation-id="<%#= @reservation.id %>">-->
+<!--          <p class="mt-2 text-sm text-gray-600">-->
+<!--            Your position: <span data-queue-status-target="position"><%#= @position.position %></span>-->
+<!--          </p>-->
+<!--          <div data-queue-status-target="status"></div>-->
+<!--        </div>-->
+        <div class="mt-4">
+          <div class="relative">
+            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+              <div class="animate-pulse shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500"
+                   style="width: 100%"></div>
+            </div>
+          </div>
+        </div>
+        <p class="mt-2 text-sm text-gray-500">
+          Please don't close this window. We'll automatically redirect you when it's your turn.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

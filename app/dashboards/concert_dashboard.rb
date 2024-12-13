@@ -18,7 +18,7 @@ class ConcertDashboard < Administrate::BaseDashboard
     reservations: Field::HasMany,
     total_tickets: Field::Number,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_11_175521) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_12_165217) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -32,19 +32,24 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_11_175521) do
     t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "reservation_id", null: false
+    t.datetime "expires_at", null: false
     t.index ["concert_id"], name: "index_queue_positions_on_concert_id"
+    t.index ["reservation_id"], name: "index_queue_positions_on_reservation_id"
   end
 
   create_table "reservations", force: :cascade do |t|
     t.bigint "concert_id", null: false
     t.string "status"
-    t.datetime "expires_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "quantity", null: false
+    t.datetime "expires_at"
+    t.string "uuid"
     t.index ["concert_id"], name: "index_reservations_on_concert_id"
   end
 
   add_foreign_key "queue_positions", "concerts"
+  add_foreign_key "queue_positions", "reservations"
   add_foreign_key "reservations", "concerts"
 end

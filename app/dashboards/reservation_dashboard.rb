@@ -10,11 +10,11 @@ class ReservationDashboard < Administrate::BaseDashboard
   ATTRIBUTE_TYPES = {
     id: Field::Number,
     concert: Field::BelongsTo,
-    expires_at: Field::DateTime,
     quantity: Field::Number,
     status: Field::String,
+    expires_at: Field::DateTime,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -25,8 +25,8 @@ class ReservationDashboard < Administrate::BaseDashboard
   COLLECTION_ATTRIBUTES = %i[
     id
     concert
-    expires_at
     quantity
+    expires_at
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -34,7 +34,6 @@ class ReservationDashboard < Administrate::BaseDashboard
   SHOW_PAGE_ATTRIBUTES = %i[
     id
     concert
-    expires_at
     quantity
     status
     created_at
@@ -46,9 +45,9 @@ class ReservationDashboard < Administrate::BaseDashboard
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
     concert
-    expires_at
     quantity
     status
+    expires_at
   ].freeze
 
   # COLLECTION_FILTERS

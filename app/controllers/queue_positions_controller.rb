@@ -1,15 +1,16 @@
 class QueuePositionsController < ApplicationController
-  def create
-    @concert = Concert.find(params[:concert_id])
-    @queue_position = QueuePosition.create!(
-      concert: @concert,
-      user_token: SecureRandom.uuid,
-      status: 'waiting'
-    )
-    redirect_to queue_status_path(@queue_position)
+  def ping
   end
 
   def status
-    @position = QueuePosition.find_by!(user_token: params[:token])
+    @reservation = Reservation.find(params[:reservation_id])
+    @position = QueuePosition.create!(
+      concert_id: @reservation.concert.id,
+      reservation_id: @reservation.id,
+      user_token: SecureRandom.uuid,
+      status: "waiting",
+      position: QueuePosition.where(concert: @concert, expires_at: Time.current..(5.minutes + 5.seconds).from_now).count + 1,
+      expires_at: @reservation.expires_at + 5.seconds.from_now
+    )
   end
 end

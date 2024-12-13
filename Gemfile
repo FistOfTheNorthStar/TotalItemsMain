@@ -18,10 +18,10 @@ gem "stimulus-rails"
 gem "cssbundling-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
-gem 'jwt'
+gem "jwt"
 gem "redis"
 gem "tailwindcss-rails"
-gem 'sidekiq'
+gem "sidekiq"
 
 gem "administrate"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
@@ -69,6 +69,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
-  gem 'webmock'
-  gem 'bullet'
+  gem "webmock"
+  gem "bullet"
+  gem "rails-controller-testing"
 end

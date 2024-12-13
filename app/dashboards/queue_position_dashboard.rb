@@ -14,7 +14,7 @@ class QueuePositionDashboard < Administrate::BaseDashboard
     status: Field::String,
     user_token: Field::String,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime,
+    updated_at: Field::DateTime
   }.freeze
 
   # COLLECTION_ATTRIBUTES

@@ -3,12 +3,11 @@ Rails.application.routes.draw do
       resources :concerts
       resources :queue_positions
       resources :reservations
-
       root to: "concerts#index"
     end
   get "pages/home"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  root 'pages#home'
+  root "pages#home"
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
@@ -17,12 +16,11 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/")
-  # root "posts#index"
-
-  # Routes for the app
-  resources :concerts, only: [:index, :show] do
-    resources :reservations, only: [:new, :create]
-    resource :queue_position, only: [:create, :show]
+  resources :concerts, only: [ :index, :show ] do
+    resources :reservations, only: [ :new, :create ]
+    resources :queue_positions, only: [] do # If you only want custom routes
+      post "ping", action: :ping, on: :collection
+      get "status/:reservation_id", action: :status, on: :collection
+    end
   end
 end
