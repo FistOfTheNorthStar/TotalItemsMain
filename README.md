@@ -1,25 +1,28 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## DATABASE
+Using postgres, so you need to setup postgres
+On Mac
+```brew install postgresql@15```
 
-Things you may want to cover:
+## Installation
+```npm install @hotwired/stimulus```
 
-* Ruby version
+## Install gems
+```bundle install```
 
-* System dependencies
+## Run tests
+```bundle exec rspec spec```
 
-* Configuration
+## Install stimulus
+```npm install @hotwired/stimulus```
 
-* Database creation
+### TODO
+Capybara tests
+Fix queue
+Fix stimulus queue
+Check if Tailwind has errors
+Optimize delivery
+Add a payment system
+Fix administrate with session deletin
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-Installation
-npm install @hotwired/stimulus
