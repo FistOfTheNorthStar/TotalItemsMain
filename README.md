@@ -35,4 +35,4 @@ Check that redis is running and url matches to your settings.
 * Make a good plan for the queue
 * Add environmental variables for passwords, redis-url
 * Generator script for all the sensitive files
-
+* After structure sets in write tests to cover full project
