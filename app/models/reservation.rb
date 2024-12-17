@@ -1,5 +1,7 @@
 class Reservation < ApplicationRecord
   belongs_to :item
+  has_many :item_sold
+  has_one :customer
 
   validates :quantity, presence: true, numericality: { greater_than_or_equal: 0 }
   validate :items_available

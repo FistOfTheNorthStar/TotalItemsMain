@@ -10,9 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_17_101719) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_17_114926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_accounts_on_email", unique: true
+  end
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -52,6 +60,17 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_101719) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "customers", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "shipping_address"
+    t.string "phone"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
+    t.index ["account_id"], name: "index_customers_on_account_id"
+    t.index ["email"], name: "index_customers_on_email"
+  end
+
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -61,6 +80,21 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_101719) do
     t.decimal "price", precision: 15, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "account_id", null: false
+    t.index ["account_id"], name: "index_items_on_account_id"
+  end
+
+  create_table "items_sold", force: :cascade do |t|
+    t.bigint "reservation_id", null: false
+    t.bigint "customer_id", null: false
+    t.string "receipt"
+    t.string "ticket"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "uuid", null: false
+    t.index ["customer_id"], name: "index_items_sold_on_customer_id"
+    t.index ["reservation_id"], name: "index_items_sold_on_reservation_id"
+    t.index ["uuid"], name: "index_items_sold_on_uuid", unique: true
   end
 
   create_table "queue_positions", force: :cascade do |t|
@@ -89,6 +123,10 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_101719) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "customers", "accounts"
+  add_foreign_key "items", "accounts"
+  add_foreign_key "items_sold", "customers"
+  add_foreign_key "items_sold", "reservations"
   add_foreign_key "queue_positions", "items"
   add_foreign_key "queue_positions", "reservations"
   add_foreign_key "reservations", "items"

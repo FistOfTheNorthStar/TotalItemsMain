@@ -12,7 +12,7 @@
 
           <div class="flex justify-between items-center">
             <span class="text-blue-600 font-bold">$<%= item.price %></span>
-            <span class="text-gray-500"><%= item.available_items %> <%= "#{ShareVariablesConstantsRegex::REPLACE_THIS}: items left" %></span>
+            <span class="text-gray-500"><%= item.available_items %>/<%= item.total_items %></span>
           </div>
 
           <%= link_to "View Details", item_path(item), class: "mt-4 block w-full text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700" %>
