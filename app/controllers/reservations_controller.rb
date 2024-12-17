@@ -1,94 +1,82 @@
 class ReservationsController < ApplicationController
-  before_action :set_item, only: [ :new ]
-  before_action :set_reservation, only: [ :create ]
-  before_action :check_availability
-  before_action :check_new_expiration, only: [ :new ]
-  before_action :check_create_expiration, only: [ :create ]
+  before_action :set_item, only: [ :new, :create ]
 
   def new
-    session[:reservation_id] = @reservation.id
-    check_queue
+    unless (@number_of_available_items =number_of_available_items) > 0
+      redirect_to(root_path, alert: "Unfortunately sold out.")
+    end
+    @reservation = Reservation.new(item: @item)
   end
 
   def create
-    unless session && @reservation
-      redirect_to(root_path, alert: "Please start from the beginning")
-      return
-    end
-    if @reservation.status == "reserved"
-      reset_session
-      redirect_to(root_path, alert: "Trying to re-reserve same session, please try again.")
-      return
-    end
-
-    ## PAYMENT FLOW
-
     quantity = reservation_params[:quantity].to_i
-    if quantity <= @item.available_items && @reservation.status == "pending" && !@reservation.expired?
-      ActiveRecord::Base.transaction do
-        @reservation.update!(status: :reserved, quantity:)
-        @reservation.item.decrement!(:available_items, quantity)
+    @reservation=Reservation.new(item: @item)
+
+    ActiveRecord::Base.transaction do
+      # Lock the item to avoid race conditions
+      @item.lock!
+      available = number_of_available_items
+      begin
+        if available==0
+          redirect_to(root_path, alert: "Sold out or zero quantity chosen!")
+          return
+        elsif quantity==0
+          set_parameters_on_error(available, "zero quantity chosen!", :quantity)
+        elsif quantity > available
+          set_parameters_on_error(available, "exceeds available items", :quantity, available)
+        end
+
+        @item.decrement!(:available_items, quantity)
+        @reservation.quantity = quantity
+        @reservation.status = "pending"
+        unless @reservation.save
+          set_parameters_on_error(available, "exceeds available items", :base)
+        end
+      rescue => error
+        set_parameters_on_error(available, "Could not complete reservation:  #{error.message}", :base)
       end
-      reset_session
-      redirect_to(root_path, notice: "#{ShareVariablesConstantsRegex::REPLACE_THIS}: Successful reservation")
-      return
+
+      if @reservation.errors.any?
+        render("new", status: 422)
+        raise(ActiveRecord::Rollback)
+      end
     end
 
-    render(:new, status: :unprocessable_entity)
+    redirect_to(url_for(controller: "queue_positions", action: "status", item_id: @reservation.item_id,
+                        reservation_id: @reservation.id))
   end
 
 private
 
-  def check_availability
-    @item||=@reservation.concert
-    if @item.available_items.zero?
-      reset_session
-      redirect_to(item_path(item), alert: "Sold out sorry!")
+  def number_of_available_items
+    if (@availability =@item.availability)
+      @item.reservation_limit ? [ @availability, @item.reservation_limit ].min : @availability
+    else
+      0
     end
+  end
+
+  def set_parameters_on_error(available, error_message, type, quantity = 1)
+    @reservation.quantity = quantity
+    @number_of_available_items = available
+    @reservation.errors.add(type, error_message)
   end
 
   def set_item
     @item = Item.find(params[:item_id])
   end
 
-  def set_reservation
-    @reservation = Reservation.find(reservation_params[:reservation_id])
-  end
-
-  def check_queue
-    if queue_required?
-
-      redirect_to(url_for(controller: "queue_positions", action: "status", item_id: @reservation.item_id,
-reservation_id: @reservation.id))
-    end
-  end
-
-
-  def check_new_expiration
-    reservations = @concert.reservations
-    if (reservation_id = session[:reservation_id])
-      @reservation = reservations.find(reservation_id)
-
-      if @reservation&.expired?
-        reset_session
-        redirect_to(concert_path(@concert), alert: "Reservation session has expired")
-      end
-    else
-      uuid=SecureRandom.uuid
-      expires_at=Time.current+5.minutes
-      @reservation = reservations.create(quantity: 0, expires_at:, status: :pending, uuid:)
-    end
-  end
-
-  def check_create_expiration
-    redirect_to(concert_path(@concert), alert: "Reservation session has expired") if @reservation.expired?
-  end
-
-  def queue_required?
-    @concert.reservations.pending_and_expiring_soon.count > 10 || @concert.queue_positions.expiring_soon.count > 0
+  def check_still_available
+    sellable_item
   end
 
   def reservation_params
-    params.require(:reservation).permit(:quantity, :reservation_id)
+    params.require(:reservation).permit(
+      :quantity,
+      :email,
+      :phone,
+      :reservation_id,
+      :shipping_address
+    )
   end
 end

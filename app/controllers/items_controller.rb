@@ -1,9 +1,14 @@
 class ItemsController < ApplicationController
   def index
-    @items = Item.all
+    @items = items
   end
 
   def show
-    @item = Item.find(params[:id])
+    @item = items.find(params[:id])
+  end
+
+  private
+  def items
+    @items ||= Item.sellable_items
   end
 end

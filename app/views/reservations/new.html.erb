@@ -6,7 +6,7 @@
 
     <%= form_with(
           model: [@item, @reservation],
-          url: item_reservations_path(@reservation),
+          url: item_reservations_path(@item),
           method: :post,
           local: true
         ) do |f| %>
@@ -21,20 +21,35 @@
         </div>
       <% end %>
 
+      <div class="mb-6">
+        <%= f.label :email, "Email", class: "block text-gray-700 font-semibold mb-2" %>
+        <%= f.email_field :email, required: true, class: "w-full p-2 border rounded-lg" %>
+      </div>
+
+      <div class="mb-6">
+        <%= f.label :phone, "Phone Number", class: "block text-gray-700 font-semibold mb-2" %>
+        <%= f.telephone_field :phone, class: "w-full p-2 border rounded-lg" %>
+      </div>
+
+      <div class="mb-6">
+        <%= f.label :shipping_address, "Shipping Address", class: "block text-gray-700 font-semibold mb-2" %>
+        <%= f.text_area :shipping_address, class: "w-full p-2 border rounded-lg" %>
+      </div>
+
       <div class="mb-4">
         <label class="block text-gray-700 font-semibold mb-2">RPLC</label>
-        <p class="text-gray-600"><%= @concert.name %></p>
+        <p class="text-gray-600"><%= @item.name %></p>
       </div>
 
       <div class="mb-6">
         <%= f.label :quantity, class: "block text-gray-700 font-semibold mb-2" %>
-        <%= f.number_field :quantity, in: 1..@item.available_items, class: "w-full p-2 border rounded-lg" %>
+        <%= f.number_field :quantity, in: 1..@number_of_available_items, class: "w-full p-2 border rounded-lg" %>
       </div>
 
       <div class="mb-4">
         <p class="text-gray-600">
           Price per ticket: $<%= @item.price %><br>
-          Available tickets: <%= @item.available_items %>
+          Available tickets: <%= @availability %>
         </p>
       </div>
       <%= f.hidden_field :reservation_id, value: @reservation.id %>

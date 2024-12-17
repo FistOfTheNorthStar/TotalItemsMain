@@ -1,6 +1,6 @@
 require "administrate/base_dashboard"
 
-class ItemDashboard < Administrate::BaseDashboard
+class CustomerDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
   # a hash that describes the type of each of the model's fields.
   #
@@ -9,17 +9,10 @@ class ItemDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    available_items: Field::Number,
-    date: Field::DateTime,
-    valid_until: Field::DateTime,
+    email: Field::String,
+    shipping_address: Field::String,
+    phone: Field::String,
     account: Field::BelongsTo,
-    sale_start_time: Field::DateTime,
-    description: Field::Text,
-    name: Field::String,
-    price: Field::String.with_options(searchable: false),
-    queue_positions: Field::HasMany,
-    total_items: Field::Number,
-    reservation_limit: Field::Number,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze
@@ -30,43 +23,33 @@ class ItemDashboard < Administrate::BaseDashboard
   # By default, it's limited to four items to reduce clutter on index pages.
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
-    id
-    available_items
-    date
-    description
-  ].freeze
+   id
+   email
+   phone
+   account
+ ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
-    id
-    available_items
-    date
-    description
-    name
-    price
-    account
-    queue_positions
-    total_items
-    created_at
-    updated_at
-  ].freeze
+   id
+   email
+   shipping_address
+   phone
+   account
+   created_at
+   updated_at
+ ].freeze
 
   # FORM_ATTRIBUTES
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
-    available_items
-    date
-    description
-    name
-    valid_until
-    account
-    sale_start_time
-    price
-    reservation_limit
-    total_items
-  ].freeze
+   email
+   shipping_address
+   phone
+   account
+ ].freeze
 
   # COLLECTION_FILTERS
   # a hash that defines filters that can be used while searching via the search
@@ -80,10 +63,9 @@ class ItemDashboard < Administrate::BaseDashboard
   #   }.freeze
   COLLECTION_FILTERS = {}.freeze
 
-  # Overwrite this method to customize how items are displayed
+  # Overwrite this method to customize how customers are displayed
   # across all pages of the admin dashboard.
-  #
-  # def display_resource(concert)
-  #   "Item ##{item.id}"
-  # end
+  def display_resource(customer)
+    customer.email
+  end
 end

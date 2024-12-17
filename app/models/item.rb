@@ -13,6 +13,23 @@ class Item < ApplicationRecord
 
   validate :valid_until_date_check, if: -> { valid_until.present? }
   validate :reservation_limit_check, if: -> { reservation_limit.present? }
+  validate :sale_start_time_check, if: -> { sale_start_time.present? }
+
+  scope :sellable_items, -> do
+    where(sellable_conditions)
+  end
+
+  scope :sellable_item, ->(item_id) do
+    where(id: item_id)
+      .where(sellable_conditions)
+      .limit(1)
+      .first
+  end
+
+  def availability
+    current_time = Time.current
+    ((valid_until.present? && valid_until <= current_time) || (sale_start_time.present? && sale_start_time >= current_time) || available_items == 0) ? 0 : available_items
+  end
 
   def sold_out?
     available_items.zero?
@@ -33,9 +50,26 @@ class Item < ApplicationRecord
     end
   end
 
+  def self.sellable_conditions
+    current_time = Time.current
+    [
+      '(valid_until IS NULL OR valid_until > ?) AND
+     (sale_start_time IS NULL OR sale_start_time <= ?) AND
+     available_items > 0',
+      current_time,
+      current_time
+    ]
+  end
+
   def reservation_limit_check
     if reservations.count >= reservation_limit
       errors.add(:base, "Maximum number of reservations reached")
+    end
+  end
+
+  def sale_start_time_check
+    if sale_start_time < Time.current
+      errors.add(:sale_start_time, "Selling start cannot be in the past")
     end
   end
 end

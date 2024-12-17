@@ -3,7 +3,7 @@ class QueuePositionsController < ApplicationController
   end
 
   def status
-    #     @reservation = Reservation.find(params[:reservation_id])
+      @reservation = Reservation.find(params[:reservation_id])
     #     @position = QueuePosition.create!(
     #       concert_id: @reservation.concert.id,
     #       reservation_id: @reservation.id,

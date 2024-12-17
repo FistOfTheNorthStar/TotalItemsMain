@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_17_122226) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_17_125517) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -83,7 +83,9 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_122226) do
     t.bigint "account_id", null: false
     t.datetime "valid_until"
     t.integer "reservation_limit"
+    t.datetime "sale_start_time"
     t.index ["account_id"], name: "index_items_on_account_id"
+    t.index ["sale_start_time"], name: "index_items_on_sale_start_time"
     t.index ["valid_until"], name: "index_items_on_valid_until"
   end
 
