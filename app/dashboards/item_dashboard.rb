@@ -16,7 +16,7 @@ class ItemDashboard < Administrate::BaseDashboard
     price: Field::String.with_options(searchable: false),
     queue_positions: Field::HasMany,
     reservations: Field::HasMany,
-    total_tickets: Field::Number,
+    total_items: Field::Number,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze
@@ -44,7 +44,7 @@ class ItemDashboard < Administrate::BaseDashboard
     price
     queue_positions
     reservations
-    total_tickets
+    total_items
     created_at
     updated_at
   ].freeze
@@ -60,7 +60,7 @@ class ItemDashboard < Administrate::BaseDashboard
     price
     queue_positions
     reservations
-    total_tickets
+    total_items
   ].freeze
 
   # COLLECTION_FILTERS

@@ -12,7 +12,6 @@ class ReservationDashboard < Administrate::BaseDashboard
     item: Field::BelongsTo,
     quantity: Field::Number,
     status: Field::String,
-    expires_at: Field::DateTime,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze
@@ -26,7 +25,6 @@ class ReservationDashboard < Administrate::BaseDashboard
     id
     item
     quantity
-    expires_at
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -47,7 +45,6 @@ class ReservationDashboard < Administrate::BaseDashboard
     item
     quantity
     status
-    expires_at
   ].freeze
 
   # COLLECTION_FILTERS
