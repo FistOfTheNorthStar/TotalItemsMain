@@ -1,8 +1,8 @@
 class Reservation < ApplicationRecord
-  belongs_to :concert
+  belongs_to :item
 
   validates :quantity, presence: true, numericality: { greater_than_or_equal: 0 }
-  validate :tickets_available
+  validate :items_available
   validates :status, presence: true
   validates :expires_at, presence: true
 
@@ -15,8 +15,8 @@ class Reservation < ApplicationRecord
 
   private
 
-  def tickets_available
-    if quantity && concert && quantity > concert.available_tickets
+  def items_available
+    if quantity && concert && quantity > concert.available_items
       errors.add(:quantity, "exceeds available tickets")
     end
   end

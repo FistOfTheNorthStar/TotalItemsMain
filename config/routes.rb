@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
   namespace :admin do
-      resources :concerts
+      resources :items
       resources :queue_positions
       resources :reservations
-      root to: "concerts#index"
+      root to: "items#index"
     end
   get "pages/home"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  resources :concerts, only: [ :index, :show ] do
+  resources :items, only: [ :index, :show ] do
     resources :reservations, only: [ :new, :create ]
     resources :queue_positions, only: [] do # If you only want custom routes
       post "ping", action: :ping, on: :collection

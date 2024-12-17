@@ -1,8 +1,49 @@
-# Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+require:
+  - standard
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'vendor/**/*'
+    - 'node_modules/**/*'
+    - 'public/**/*'
+  TargetRubyVersion: 3.3.4
+
+RSpec/AnyInstance:
+  Exclude:
+    - 'spec/rails_helper.rb'
+
+RSpec/ExampleLength:
+  Max: 260 # There is one rare character-spew, one should stick to 100 for the most part
+
+RSpec/MultipleExpectations:
+  Max: 50
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 26
+
+RSpec/NestedGroups:
+  Max: 10
+
+Style/BlockDelimiters:
+  Enabled: true
+  EnforcedStyle: semantic
+  AllowBracesOnProceduralOneLiners: true
+
+Layout/LineLength:  # Changed from Metrics/LineLength
+  Max: 120
+
+Style/MethodCallWithArgsParentheses:
+  Exclude:
+    - 'bin/**/*'
+    - 'config/**/*'
+    - 'db/**/*'
+  Enabled: true
+  EnforcedStyle: require_parentheses
+  AllowParenthesesInChaining: true
+  AllowParenthesesInMultilineCall: true

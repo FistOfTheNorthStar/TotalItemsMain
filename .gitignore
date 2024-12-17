@@ -50,4 +50,4 @@ config/master.key
 # System files
 .DS_Store
 *.swp
-*~
+*~.env

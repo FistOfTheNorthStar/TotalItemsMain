@@ -9,7 +9,7 @@ class ReservationDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    concert: Field::BelongsTo,
+    item: Field::BelongsTo,
     quantity: Field::Number,
     status: Field::String,
     expires_at: Field::DateTime,
@@ -24,7 +24,7 @@ class ReservationDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
     id
-    concert
+    item
     quantity
     expires_at
   ].freeze
@@ -33,7 +33,7 @@ class ReservationDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
     id
-    concert
+    item
     quantity
     status
     created_at
@@ -44,7 +44,7 @@ class ReservationDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
-    concert
+    item
     quantity
     status
     expires_at
