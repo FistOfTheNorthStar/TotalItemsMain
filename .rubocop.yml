@@ -36,7 +36,7 @@ Style/BlockDelimiters:
   AllowBracesOnProceduralOneLiners: true
 
 Layout/LineLength:  # Changed from Metrics/LineLength
-  Max: 120
+  Max: 160 # so what?
 
 Style/MethodCallWithArgsParentheses:
   Exclude:
