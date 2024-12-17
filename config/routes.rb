@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
   namespace :admin do
       resources :items
+      resources :accounts
+      resources :customers
       resources :queue_positions
       resources :reservations
-      root to: "items#index"
+      root to: "accounts#index"
     end
   get "pages/home"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

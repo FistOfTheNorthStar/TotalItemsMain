@@ -17,7 +17,7 @@ class Reservation < ApplicationRecord
 
   private
 
-  def items_available
+  def items_availables
     if quantity && concert && quantity > concert.available_items
       errors.add(:quantity, "exceeds available tickets")
     end

@@ -1,11 +1,11 @@
 class ReservationProcessingJob
   include Sidekiq::Job
   sidekiq_options retry: ShareVariablesConstantsRegex::PAYMENT_JOB_RETRIES,
-retry_for: ShareVariablesConstantsRegex::PAYMENT_JOB_EXPIRES
+    retry_for: ShareVariablesConstantsRegex::PAYMENT_JOB_EXPIRES
 
   class ReservationJobError < StandardError; end
 
-  def perform(reservation_id, uuid)
+  def perform(reservation_id)
     ActiveRecord::Base.transaction do
       begin
         reservation = Reservation.find(reservation_id)
@@ -33,7 +33,7 @@ retry_for: ShareVariablesConstantsRegex::PAYMENT_JOB_EXPIRES
   private
 
   def set_ticket_available_again(reservation_id)
-    Reservation.update(reservation_id)
+    Reservation.find(reservation_id)
     reservation = Reservation.find(reservation_id)
     reservation.item.increment!(:available_tickets, reservation.quantity) # put tickets back
     reservation.update(status: "expired_or_error")
