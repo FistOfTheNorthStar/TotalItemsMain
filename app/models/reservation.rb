@@ -7,9 +7,9 @@ class Reservation < ApplicationRecord
   validate :items_available
   validates :status, presence: true
   validates :expires_at, presence: true
+  validate :within_reservation_limit
 
   scope :pending_and_expiring_soon, ->() { where(status: "pending", expires_at: Time.current..5.minutes.from_now) }
-
 
   def expired?
     expires_at < Time.current
@@ -20,6 +20,13 @@ class Reservation < ApplicationRecord
   def items_available
     if quantity && concert && quantity > concert.available_items
       errors.add(:quantity, "exceeds available tickets")
+    end
+  end
+
+  def within_reservation_limit
+    if item.reservation_limit.present? &&
+      item.reservations.count >= item.reservation_limit
+      errors.add(:base, "This item has reached its reservation limit")
     end
   end
 end

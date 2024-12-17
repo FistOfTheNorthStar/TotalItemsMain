@@ -11,6 +11,9 @@ class Item < ApplicationRecord
   validates :available_items, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :price, presence: true, numericality: { greater_than_or_equal_to: 0 }
 
+  validate :valid_until_date_check, if: -> { valid_until.present? }
+  validate :reservation_limit_check, if: -> { reservation_limit.present? }
+
   def sold_out?
     available_items.zero?
   end
@@ -21,5 +24,18 @@ class Item < ApplicationRecord
 
   def percentage_sold
     ((items_sold.to_f / total_items) * 100).round(2)
+  end
+
+  private
+  def valid_until_date_check
+    if valid_until < Time.current
+      errors.add(:valid_until, "can't be in the past")
+    end
+  end
+
+  def reservation_limit_check
+    if reservations.count >= reservation_limit
+      errors.add(:base, "Maximum number of reservations reached")
+    end
   end
 end
