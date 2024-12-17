@@ -41,7 +41,7 @@ group :development, :test do
   gem "standard", require: false
   gem "rubocop-rspec", require: false
   gem "rubocop", require: false
-  gem 'dotenv'
+  gem "dotenv"
 end
 
 group :development do
