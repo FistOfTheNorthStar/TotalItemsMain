@@ -9,10 +9,10 @@
 
         <%# Desktop Menu %>
         <div class="hidden sm:flex sm:items-center sm:space-x-8">
-          <%= link_to "Concerts", "#", class: "text-gray-500 hover:text-gray-900" %>
+          <%= link_to "Items", "#", class: "text-gray-500 hover:text-gray-900" %>
           <%= link_to "About", "#", class: "text-gray-500 hover:text-gray-900" %>
           <%= link_to "Admin", admin_root_path, class: "text-gray-500 hover:text-gray-900" %>
-          <%= link_to "Book Now", concerts_path, class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" %>
+          <%= link_to "Book Now", items_path, class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700" %>
         </div>
 
         <%# Mobile Menu Button %>
@@ -29,7 +29,7 @@
     <%# Mobile Menu %>
     <div data-toggle-menu-target="mobileMenu" class="hidden sm:hidden">
       <div class="px-2 pt-2 pb-3 space-y-1">
-        <%= link_to "Concerts", concerts_path, class: "block px-3 py-2 text-gray-500 hover:text-gray-900" %>
+        <%= link_to "Items", items_path, class: "block px-3 py-2 text-gray-500 hover:text-gray-900" %>
         <%= link_to "About", "#", class: "block px-3 py-2 text-gray-500 hover:text-gray-900" %>
         <%= link_to "Contact", "#", class: "block px-3 py-2 text-gray-500 hover:text-gray-900" %>
       </div>
@@ -47,7 +47,7 @@
           You have 5 minutes time to buy your ticket!
         </p>
         <div class="mt-10 flex items-center gap-x-6">
-          <%= link_to "View Concerts", concerts_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500" %>
+          <%= link_to "View Items", items_path, class: "rounded-md bg-blue-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500" %>
           <%= link_to "Learn more", "#", class: "text-sm font-semibold leading-6 text-gray-900" %>
         </div>
       </div>
@@ -63,7 +63,7 @@
       <div class="mx-auto max-w-2xl text-center">
         <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Everything You Need</h2>
         <p class="mt-6 text-lg leading-8 text-gray-600">
-          Tickets are limited, book now!
+          <%= "#{ShareVariablesConstantsRegex::REPLACE_THIS}: limited amount" %>
         </p>
       </div>
 
@@ -76,8 +76,8 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
               </svg>
             </div>
-            <h3 class="text-lg font-semibold">Live Events</h3>
-            <p class="mt-2 text-gray-600">Check what is still available, tickets selling fast.</p>
+            <h3 class="text-lg font-semibold"><%= "#{ShareVariablesConstantsRegex::REPLACE_THIS}: check availability" %></h3>
+            <p class="mt-2 text-gray-600"><%= "#{ShareVariablesConstantsRegex::REPLACE_THIS}: selling fast" %></p>
           </div>
 
           <%# Feature 2 %>
@@ -88,7 +88,7 @@
               </svg>
             </div>
             <h3 class="text-lg font-semibold">Easy Booking</h3>
-            <p class="mt-2 text-gray-600">If our servers are busy you can wait in queue, background music not provided.</p>
+            <p class="mt-2 text-gray-600">If our servers are busy you can wait in queue.</p>
           </div>
 
           <%# Feature 3 %>
@@ -99,7 +99,7 @@
               </svg>
             </div>
             <h3 class="text-lg font-semibold">QR Code tickets!</h3>
-            <p class="mt-2 text-gray-600">Tickets are sent to your email and just scan the QR at the door.</p>
+            <p class="mt-2 text-gray-600"><%= "#{ShareVariablesConstantsRegex::REPLACE_THIS}: Receive a QR code for access or receipt." %></p>
           </div>
         </div>
       </div>

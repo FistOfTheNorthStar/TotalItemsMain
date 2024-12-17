@@ -1,6 +1,6 @@
 # README
 
-This a project that is not yet production ready, but can be locally tested for development purposes.
+🌸 This a project that is not yet production ready. 🌸
 
 ## DATABASE
 Using postgres, so you need to setup postgres
@@ -22,6 +22,19 @@ On Mac
 ## Sidekiq
 Check that redis is running and url matches to your settings.
 ```bundle exec sidekiq```
+
+## Guard
+Remember to init your guard
+```bundle exec guard init```
+```bundle exec guard```
+
+## Reek
+Check stinky code, so many opinions, I relaxed rules
+```bundle exec reek .```
+```bundle exec reek . --format html > reek_results.html```
+
+## Pricing functions
+Pricing functions will have precision 15 and scale 6. US tax code has for example this type 6.1235% calculations, and there are currencies that you need to multiply by one million to dollar. 
 
 ### TODO
 * Capybara tests

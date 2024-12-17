@@ -1,6 +1,6 @@
 require "administrate/base_dashboard"
 
-class ConcertDashboard < Administrate::BaseDashboard
+class ItemDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
   # a hash that describes the type of each of the model's fields.
   #
@@ -9,7 +9,7 @@ class ConcertDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    available_tickets: Field::Number,
+    available_items: Field::Number,
     date: Field::DateTime,
     description: Field::Text,
     name: Field::String,
@@ -28,7 +28,7 @@ class ConcertDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
     id
-    available_tickets
+    available_items
     date
     description
   ].freeze
@@ -37,7 +37,7 @@ class ConcertDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
     id
-    available_tickets
+    available_items
     date
     description
     name
@@ -53,7 +53,7 @@ class ConcertDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
-    available_tickets
+    available_items
     date
     description
     name
@@ -75,10 +75,10 @@ class ConcertDashboard < Administrate::BaseDashboard
   #   }.freeze
   COLLECTION_FILTERS = {}.freeze
 
-  # Overwrite this method to customize how concerts are displayed
+  # Overwrite this method to customize how items are displayed
   # across all pages of the admin dashboard.
   #
   # def display_resource(concert)
-  #   "Concert ##{concert.id}"
+  #   "Item ##{item.id}"
   # end
 end

@@ -9,7 +9,7 @@ class QueuePositionDashboard < Administrate::BaseDashboard
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
     id: Field::Number,
-    concert: Field::BelongsTo,
+    item: Field::BelongsTo,
     position: Field::Number,
     status: Field::String,
     user_token: Field::String,
@@ -24,7 +24,7 @@ class QueuePositionDashboard < Administrate::BaseDashboard
   # Feel free to add, remove, or rearrange items.
   COLLECTION_ATTRIBUTES = %i[
     id
-    concert
+    item
     position
     status
   ].freeze
@@ -33,7 +33,7 @@ class QueuePositionDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
     id
-    concert
+    item
     position
     status
     user_token
@@ -45,7 +45,7 @@ class QueuePositionDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
-    concert
+    item
     position
     status
     user_token

@@ -1,0 +1,92 @@
+---
+exclude_paths:
+  - "db/migrate"
+  - "vendor/**/*"
+  - "node_modules/**/*"
+  - "tmp/**/*"
+
+detectors:
+  DuplicateMethodCall:
+    max_calls: 2
+    allow_calls: []
+
+  FeatureEnvy:
+    enabled: true
+    exclude: []
+
+  TooManyStatements:
+    max_statements: 30
+    exclude:
+      - initialize
+
+  InstanceVariableAssumption:
+    enabled: false
+
+  IrresponsibleModule:
+    enabled: false
+
+  NilCheck:
+    enabled: false
+
+  UncommunicativeMethodName:
+    enabled: true
+    reject:
+      - '/^[a-z]$/'
+      - '/[0-9]$/'
+      - '/[A-Z]/'
+
+  UncommunicativeModuleName:
+    enabled: true
+    reject:
+      - '/^.$/'
+      - '/[0-9]$/'
+
+  UncommunicativeParameterName:
+    enabled: true
+    reject:
+      - '/^.$/'
+      - '/[0-9]$/'
+      - '/[A-Z]/'
+
+  UncommunicativeVariableName:
+    enabled: true
+    reject:
+      - '/^.$/'
+      - '/[0-9]$/'
+      - '/[A-Z]/'
+
+  UtilityFunction:
+    enabled: false
+
+  TooManyMethods:
+    max_methods: 30
+
+  LongParameterList:
+    max_params: 8
+
+  BooleanParameter:
+    enabled: true
+
+  ControlParameter:
+    enabled: true
+
+  DataClump:
+    max_copies: 2
+    min_clump_size: 2
+
+  LongYieldList:
+    max_params: 3
+
+  NestedIterators:
+    max_allowed_nesting: 4
+    ignore_iterators:
+      - times
+
+  RepeatedConditional:
+    max_ifs: 5
+
+  TooManyInstanceVariables:
+    max_instance_variables: 15
+
+  TooManyConstants:
+    max_constants: 8

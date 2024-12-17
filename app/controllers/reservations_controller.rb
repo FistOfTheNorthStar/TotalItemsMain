@@ -1,5 +1,5 @@
 class ReservationsController < ApplicationController
-  before_action :set_concert, only: [ :new ]
+  before_action :set_item, only: [ :new ]
   before_action :set_reservation, only: [ :create ]
   before_action :check_availability
   before_action :check_new_expiration, only: [ :new ]
@@ -12,43 +12,43 @@ class ReservationsController < ApplicationController
 
   def create
     unless session && @reservation
-      redirect_to root_path, alert: "Please start from the beginning"
+      redirect_to(root_path, alert: "Please start from the beginning")
       return
     end
     if @reservation.status == "reserved"
       reset_session
-      redirect_to root_path, alert: "Trying to re-reserve same session, please try again."
+      redirect_to(root_path, alert: "Trying to re-reserve same session, please try again.")
       return
     end
 
     ## PAYMENT FLOW
 
     quantity = reservation_params[:quantity].to_i
-    if quantity <= @concert.available_tickets && @reservation.status == "pending" && !@reservation.expired?
+    if quantity <= @item.available_items && @reservation.status == "pending" && !@reservation.expired?
       ActiveRecord::Base.transaction do
         @reservation.update!(status: :reserved, quantity:)
-        @reservation.concert.decrement!(:available_tickets, quantity)
+        @reservation.item.decrement!(:available_items, quantity)
       end
       reset_session
-      redirect_to root_path, notice: "Reservation was successful!"
+      redirect_to(root_path, notice: "#{ShareVariablesConstantsRegex::REPLACE_THIS}: Successful reservation")
       return
     end
 
-    render :new, status: :unprocessable_entity
+    render(:new, status: :unprocessable_entity)
   end
 
 private
 
   def check_availability
-    @concert||=@reservation.concert
-    if @concert.available_tickets.zero?
+    @item||=@reservation.concert
+    if @item.available_items.zero?
       reset_session
-      redirect_to concert_path(@concert), alert: "Sold out sorry!"
+      redirect_to(item_path(item), alert: "Sold out sorry!")
     end
   end
 
-  def set_concert
-    @concert = Concert.find(params[:concert_id])
+  def set_item
+    @item = Item.find(params[:item_id])
   end
 
   def set_reservation
@@ -58,7 +58,8 @@ private
   def check_queue
     if queue_required?
 
-      redirect_to url_for(controller: "queue_positions", action: "status", concert_id: @reservation.concert_id, reservation_id: @reservation.id)
+      redirect_to(url_for(controller: "queue_positions", action: "status", item_id: @reservation.item_id,
+reservation_id: @reservation.id))
     end
   end
 
@@ -70,7 +71,7 @@ private
 
       if @reservation&.expired?
         reset_session
-        redirect_to concert_path(@concert), alert: "Reservation session has expired"
+        redirect_to(concert_path(@concert), alert: "Reservation session has expired")
       end
     else
       uuid=SecureRandom.uuid
@@ -80,7 +81,7 @@ private
   end
 
   def check_create_expiration
-    redirect_to concert_path(@concert), alert: "Reservation session has expired" if @reservation.expired?
+    redirect_to(concert_path(@concert), alert: "Reservation session has expired") if @reservation.expired?
   end
 
   def queue_required?

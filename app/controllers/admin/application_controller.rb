@@ -11,7 +11,7 @@ module Admin
     def authenticate_admin
       authenticate_or_request_with_http_basic do |username, password|
         # In production, you should use environment variables for these values
-        username == "admin" && password == "secretpassword"
+        username == ENV["DEV_ADMINISTRATE_USER"] && password == ENV["DEV_ADMINISTRATE_PASSWORD"]
       end
     end
 
