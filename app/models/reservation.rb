@@ -19,7 +19,7 @@ class Reservation < ApplicationRecord
 
   scope :pending_and_old, -> {
     pending
-      .where('created_at <= ?', 15.minutes.ago)
+      .where("created_at <= ?", 15.minutes.ago)
   }
 
   private

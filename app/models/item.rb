@@ -27,7 +27,9 @@ class Item < ApplicationRecord
 
   def availability
     current_time = Time.current
-    ((valid_until.present? && valid_until <= current_time) || (sale_start_time.present? && sale_start_time >= current_time) || available_items == 0) ? 0 : available_items
+    ((valid_until.present? && valid_until <= current_time) ||
+      (sale_start_time.present? && sale_start_time >= current_time) ||
+      available_items == 0) ? 0 : available_items
   end
 
   def sold_out?
