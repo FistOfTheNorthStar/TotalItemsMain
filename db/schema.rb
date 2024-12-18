@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_17_125517) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_17_232144) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -102,19 +102,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_125517) do
     t.index ["uuid"], name: "index_items_sold_on_uuid", unique: true
   end
 
-  create_table "queue_positions", force: :cascade do |t|
-    t.string "user_token"
-    t.bigint "item_id", null: false
-    t.integer "position"
-    t.string "status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "reservation_id", null: false
-    t.datetime "expires_at", null: false
-    t.index ["item_id"], name: "index_queue_positions_on_item_id"
-    t.index ["reservation_id"], name: "index_queue_positions_on_reservation_id"
-  end
-
   create_table "reservations", force: :cascade do |t|
     t.bigint "item_id", null: false
     t.datetime "created_at", null: false
@@ -132,7 +119,5 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_125517) do
   add_foreign_key "items", "accounts"
   add_foreign_key "items_sold", "customers"
   add_foreign_key "items_sold", "reservations"
-  add_foreign_key "queue_positions", "items"
-  add_foreign_key "queue_positions", "reservations"
   add_foreign_key "reservations", "items"
 end

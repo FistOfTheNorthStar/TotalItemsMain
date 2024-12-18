@@ -1,6 +1,5 @@
 class Item < ApplicationRecord
   has_many :reservations, dependent: :destroy
-  has_many :queue_positions, dependent: :destroy
   belongs_to :account
   has_many :item_sold
   has_many :customers, through: :item_sold
@@ -28,7 +27,9 @@ class Item < ApplicationRecord
 
   def availability
     current_time = Time.current
-    ((valid_until.present? && valid_until <= current_time) || (sale_start_time.present? && sale_start_time >= current_time) || available_items == 0) ? 0 : available_items
+    ((valid_until.present? && valid_until <= current_time) ||
+      (sale_start_time.present? && sale_start_time >= current_time) ||
+      available_items == 0) ? 0 : available_items
   end
 
   def sold_out?

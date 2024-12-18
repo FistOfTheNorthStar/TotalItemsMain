@@ -17,7 +17,6 @@ class ItemDashboard < Administrate::BaseDashboard
     description: Field::Text,
     name: Field::String,
     price: Field::String.with_options(searchable: false),
-    queue_positions: Field::HasMany,
     total_items: Field::Number,
     reservation_limit: Field::Number,
     created_at: Field::DateTime,
@@ -46,7 +45,6 @@ class ItemDashboard < Administrate::BaseDashboard
     name
     price
     account
-    queue_positions
     total_items
     created_at
     updated_at
