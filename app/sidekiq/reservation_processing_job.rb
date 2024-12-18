@@ -3,7 +3,7 @@ class ReservationProcessingJob
   sidekiq_options retry: ShareVariablesConstantsRegex::PAYMENT_JOB_RETRIES,
     retry_for: ShareVariablesConstantsRegex::PAYMENT_JOB_EXPIRES
 
-  class ReservationJobError < StandardError; end
+  class ReservationProcessingJobError < StandardError; end
 
   def perform(reservation_id)
     ActiveRecord::Base.transaction do
@@ -14,8 +14,8 @@ class ReservationProcessingJob
         reservation.payment_begin!
         # MISSING PAYMENT LOGIC GOES HERE
         # Let's just wait for now
-        if Rails.env.test? && ENV["TEST_WAIT"]
-          sleep(ENV["TEST_WAIT"].to_i) # Emulate 2-second API delay
+        if (Rails.env.test? || Rails.env.development?) && ENV["TEST_WAIT"]
+          sleep(ENV["TEST_WAIT"].to_i)
         end
 
         reservation.completed!
@@ -24,7 +24,7 @@ class ReservationProcessingJob
         # Let job finish here, log the error
         Rails.logger.error("Could not find reservation: #{error.message}")
       rescue => error
-        raise(ReservationJobError, "Job with reservation_id: #{reservation_id} with #{error.message}")
+        raise(ReservationProcessingJobError, "Job with reservation_id: #{reservation_id} with #{error.message}")
       end
     end
   end
@@ -41,7 +41,8 @@ class ReservationProcessingJob
   def set_ticket_available_again(reservation_id)
     Reservation.find(reservation_id)
     reservation = Reservation.find(reservation_id)
+    # TODO 2 queries
     reservation.item.increment!(:available_tickets, reservation.quantity) # put tickets back
-    reservation.update(status: "expired_or_error")
+    reservation.failed!
   end
 end
