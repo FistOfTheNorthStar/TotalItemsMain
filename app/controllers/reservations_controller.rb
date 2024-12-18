@@ -11,7 +11,6 @@ class ReservationsController < ApplicationController
   def create
     quantity = reservation_params[:quantity].to_i
     @reservation=Reservation.new(item: @item)
-
     ActiveRecord::Base.transaction do
       # Lock the item to avoid race conditions
       @item.lock!
@@ -36,17 +35,35 @@ class ReservationsController < ApplicationController
         set_parameters_on_error(available, "Could not complete reservation:  #{error.message}", :base)
       end
 
-      if @reservation.errors.any?
-        render("new", status: 422)
+      # Check that email exists, whole customer creation will be moved to its own view and fixed with logic / social media logins
+      # Needs device
+      unless reservation_params[:email] =~ URI::MailTo::EMAIL_REGEXP
+        errors.add(:email, "is not a valid email address")
+      end
+
+      if @reservation.errors.any? || !@reservation.persisted?
+        render(action: :new, status: 422)
         raise(ActiveRecord::Rollback)
       end
     end
 
+    # Customer creation will later go into its own view, let's just take the email for now
+    create_customer(reservation_params)
+
+    job_id=ReservationProcessingJob.perform_async(@reservation.id)
     redirect_to(url_for(controller: "queue_positions", action: "status", item_id: @reservation.item_id,
-                        reservation_id: @reservation.id))
+                        reservation_id: @reservation.id, job_id:))
   end
 
 private
+
+  # This is a temporary construct
+  def create_customer(params)
+    customer = Customer.build(email: params[:email])
+    customer.shipping_address = params[:shipping_address] if params[:shipping_address].present?
+    customer.phone = params[:phone] if params[:phone].present?
+    customer.save
+  end
 
   def number_of_available_items
     if (@availability =@item.availability)

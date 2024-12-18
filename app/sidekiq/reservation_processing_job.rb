@@ -9,16 +9,22 @@ class ReservationProcessingJob
     ActiveRecord::Base.transaction do
       begin
         reservation = Reservation.find(reservation_id)
-        if reservation.uuid != uuid
-          raise(ReservationJobError, "Reservation #{uuid} not matching")
+
+        # Payment logic is lacking but we just want to send notifications to the front of state chagnes
+        reservation.payment_begin!
+        # MISSING PAYMENT LOGIC GOES HERE
+        # Let's just wait for now
+        if Rails.env.test? && ENV["TEST_WAIT"]
+          sleep(ENV["TEST_WAIT"].to_i) # Emulate 2-second API delay
         end
 
-        # MISSING PAYMENT LOGIC GOES HERE
+        reservation.completed!
 
-      rescue ActiveRecord::RecordNotFound => e
-        raise(ReservationJobError, "Reservation #{reservation_id} not found")
-      rescue => e
-        raise(ReservationJobError, "Transaction failed: #{e.message}")
+      rescue ActiveRecord::RecordNotFound => error
+        # Let job finish here, log the error
+        Rails.logger.error("Could not find reservation: #{error.message}")
+      rescue => error
+        raise(ReservationJobError, "Job with reservation_id: #{reservation_id} with #{error.message}")
       end
     end
   end

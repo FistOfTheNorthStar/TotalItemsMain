@@ -1,22 +1,13 @@
 class ReservationExpirationCleanupJob
   include Sidekiq::Job
-  class ReservationExpirationCleanupJobError < StandardError; end
 
-  def perform(reservation_id)
-    ActiveRecord::Base.transaction do
-      begin
-        reservation = Reservation.find(reservation_id)
-        if reservation.uuid != uuid
-          raise(ReservationExpirationCleanupJobError, "Reservation #{uuid} not matching")
-        end
-
-        # MISSING PAYMENT LOGIC GOES HERE
-
-      rescue ActiveRecord::RecordNotFound => e
-        raise(ReservationExpirationCleanupJobError, "Reservation #{reservation_id} not found")
-      rescue => e
-        raise(ReservationExpirationCleanupJobError, "Transaction failed: #{e.message}")
-      end
+  def perform
+    expired_quantities = Reservation.pending_and_old
+    expired_quantities.group(:item_id)
+      .sum(:quantity).each do |item_id, total_quantity|
+      item = Item.find(item_id)
+      item.increment!(:available_items, total_quantity) if item
     end
+    expired_quantities.update_all(status: :expired)
   end
 end

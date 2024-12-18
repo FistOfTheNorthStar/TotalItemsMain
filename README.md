@@ -44,6 +44,9 @@ or to file
 ## Pricing functions
 Pricing functions will have precision 15 and scale 6. US tax code has for example this type 6.1235% calculations, and there are currencies that you need to multiply by one million to dollar. 
 
+## Sidekiq Dash
+
+
 ### TODO
 * Coverage to 99% once shape is alpha ready
 * Add device

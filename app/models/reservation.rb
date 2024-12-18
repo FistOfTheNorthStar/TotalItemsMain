@@ -3,25 +3,26 @@ class Reservation < ApplicationRecord
   has_many :item_sold
   has_one :customer
 
+  delegate :account, to: :item
+
   validates :quantity, presence: true, numericality: { greater_than_or_equal: 0 }
-  validate :items_available
   validates :status, presence: true
-  validates :expires_at, presence: true
   validate :within_reservation_limit
+
+  enum :status, [ :pending, :payment_begin, :payment_end, :canceled, :expired, :failed, :completed ]
 
   scope :pending_and_expiring_soon, ->() { where(status: "pending", expires_at: Time.current..5.minutes.from_now) }
 
   def expired?
-    expires_at < Time.current
+    created_at + 1.minutes < Time.current
   end
+
+  scope :pending_and_old, -> {
+    pending
+      .where('created_at <= ?', 15.minutes.ago)
+  }
 
   private
-
-  def items_availables
-    if quantity && concert && quantity > concert.available_items
-      errors.add(:quantity, "exceeds available tickets")
-    end
-  end
 
   def within_reservation_limit
     if item.reservation_limit.present? &&

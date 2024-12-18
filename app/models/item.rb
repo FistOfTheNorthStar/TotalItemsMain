@@ -1,6 +1,5 @@
 class Item < ApplicationRecord
   has_many :reservations, dependent: :destroy
-  has_many :queue_positions, dependent: :destroy
   belongs_to :account
   has_many :item_sold
   has_many :customers, through: :item_sold
