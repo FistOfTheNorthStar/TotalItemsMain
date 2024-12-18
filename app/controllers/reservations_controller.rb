@@ -35,16 +35,20 @@ class ReservationsController < ApplicationController
         set_parameters_on_error(available, "Could not complete reservation:  #{error.message}", :base)
       end
 
+      p(@reservation.errors)
       # Check that email exists, whole customer creation will be moved to its own view and fixed with logic / social media logins
+      # Customers will be forced to register or login via social media logins
       # Needs device
       unless reservation_params[:email] =~ URI::MailTo::EMAIL_REGEXP
-        errors.add(:email, "is not a valid email address")
+        @reservation.errors.add(:email, "is not a valid email address")
       end
 
-      if @reservation.errors.any? || !@reservation.persisted?
-        render(action: :new, status: 422)
-        raise(ActiveRecord::Rollback)
-      end
+      raise(ActiveRecord::Rollback) if reservation_errors?
+    end
+
+    if reservation_errors?
+      render(action: :new, status: 422)
+      return
     end
 
     # Customer creation will later go into its own view, let's just take the email for now
@@ -57,12 +61,17 @@ class ReservationsController < ApplicationController
 
 private
 
+    def reservation_errors?
+      @reservation.errors.any? || !@reservation.persisted?
+    end
+
   # This is a temporary construct
   def create_customer(params)
     customer = Customer.build(email: params[:email])
     customer.shipping_address = params[:shipping_address] if params[:shipping_address].present?
     customer.phone = params[:phone] if params[:phone].present?
-    customer.save
+    customer.account = @reservation.account
+    customer.save!
   end
 
   def number_of_available_items

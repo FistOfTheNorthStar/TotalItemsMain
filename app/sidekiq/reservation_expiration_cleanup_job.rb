@@ -1,5 +1,6 @@
 class ReservationExpirationCleanupJob
   include Sidekiq::Job
+  sidekiq_options retry: false
 
   def perform
     expired_quantities = Reservation.pending_and_old

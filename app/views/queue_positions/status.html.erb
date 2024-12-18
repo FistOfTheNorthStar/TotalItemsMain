@@ -3,51 +3,16 @@
     <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
       <div class="text-center">
         <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
-          You're in line!
+          Please wait!
         </h2>
-        <%#= javascript_include_tag "controllers/queue_status_controller", data: { controller: "queue-status", position: @position } %>
-
-<!--        <div data-controller="queue-status" data-queue-status-position="<%#= @position.position %>" data-queue-status-reservation-id="<%#= @reservation.id %>">-->
-<!--          <p class="mt-2 text-sm text-gray-600">-->
-<!--            Your position: <%#= @position.position %>-->
-<!--          </p>-->
-<!--          <div data-queue-status-target="status"></div>-->
-<!--        </div>-->
-
-<!--        <div data-controller="queue-status"-->
-<!--             data-queue-status-position="<%#= @position %>"-->
-<!--             data-queue-status-reservation-id="<%#= @reservation.id %>">-->
-<!--          <p class="mt-2 text-sm text-gray-600">-->
-<!--            Your position: <span data-queue-status-target="position"><%#= @position.position %></span>-->
-<!--          </p>-->
-<!--          <div data-queue-status-target="status"></div>-->
-<!--        </div>-->
-
-<!--        <div data-controller="queue-status">-->
-<!--  <span data-queue-status-target="status">-->
-<!--    <p class="mt-2 text-sm text-gray-600">-->
-<!--            Your position: <span ><%#= @position.position %></span>-->
-<!--          </p>-->
-<!--    </span>-->
-<!--        </div>-->
-
-        <div data-controller="hello">
-          Hello, Stimuslus!
+        <div data-controller="queue-status" data-queue-status-reservation-id="<%= @reservation.id %>">
+          <div data-queue-status-target="status">Pending</div>
         </div>
-
-        <div data-controller="queue-status">
-          <span id="queue-status">Loading...</span>
+        <div data-controller="expiration" data-expiration-minutes="<%= ShareVariablesConstantsRegex::PAYMENT_JOB_EXPIRES %>">
+          <div class="mt-2 text-sm text-gray-500">
+            Expires in: <span class="inline-block text-black font-bold" data-expiration-target="expires">5:00</span>
+          </div>
         </div>
-
-
-        <%#= javascript_include_tag "controllers/queue_status_controller", data: { controller: "queue-status" } %>
-
-<!--        <div data-controller="queue-status" data-queue-status-position="<%#= @position %>" data-queue-status-reservation-id="<%#= @reservation.id %>">-->
-<!--          <p class="mt-2 text-sm text-gray-600">-->
-<!--            Your position: <span data-queue-status-target="position"><%#= @position.position %></span>-->
-<!--          </p>-->
-<!--          <div data-queue-status-target="status"></div>-->
-<!--        </div>-->
         <div class="mt-4">
           <div class="relative">
             <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
@@ -57,7 +22,7 @@
           </div>
         </div>
         <p class="mt-2 text-sm text-gray-500">
-          Please don't close this window. We'll automatically redirect you when it's your turn.
+          Please don't close this window. We'll automatically redirect you when done.
         </p>
       </div>
     </div>

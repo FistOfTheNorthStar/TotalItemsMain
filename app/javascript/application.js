@@ -2,3 +2,6 @@
 import "controllers"
 import "trix"
 import "@rails/actiontext"
+import "@rails/actioncable"
+import "@hotwired/turbo-rails"
+import "channels"

@@ -9,14 +9,11 @@ class Reservation < ApplicationRecord
   validates :status, presence: true
   validate :within_reservation_limit
 
+  after_commit :broadcast_status_change, if: :saved_change_to_status?
+
   enum :status, [ :pending, :payment_begin, :payment_end, :canceled, :expired, :failed, :completed ]
 
   scope :pending_and_expiring_soon, ->() { where(status: "pending", expires_at: Time.current..5.minutes.from_now) }
-
-  def expired?
-    created_at + 1.minutes < Time.current
-  end
-
   scope :pending_and_old, -> {
     pending
       .where("created_at <= ?", 15.minutes.ago)
@@ -26,8 +23,12 @@ class Reservation < ApplicationRecord
 
   def within_reservation_limit
     if item.reservation_limit.present? &&
-      item.reservations.count >= item.reservation_limit
+      quantity > item.reservation_limit
       errors.add(:base, "This item has reached its reservation limit")
     end
+  end
+
+  def broadcast_status_change
+    ReservationStatusBroadcaster.new(id, status).broadcast
   end
 end
