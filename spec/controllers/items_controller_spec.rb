@@ -2,26 +2,48 @@ require 'rails_helper'
 
 RSpec.describe(ItemsController, type: :controller) do
   describe "GET #index" do
-    it "assigns all items to items" do
-      item1 = create(:item) # Use FactoryBot or similar
-      item2 = create(:item)
-      get :index
-      expect(assigns(:items)).to(match_array([ item1, item2 ]))
-    end
-
     it "renders the index template" do
       get :index
       expect(response).to(render_template("index"))
     end
+
+    it "assigns all items to @items" do
+      travel_to Time.zone.local(2024, 1, 1, 12, 0, 0)
+
+      item1 = create(:item, sale_start_time: 1.day.from_now, valid_until: 2.weeks.from_now)
+      item2 = create(:item, sale_start_time: 1.day.from_now, valid_until: 2.weeks.from_now)
+
+      get :index
+
+      puts "Total items in database: #{Item.count}"
+      puts "Items returned by controller: #{assigns(:items).inspect}"
+
+      expect(assigns(:items)).to match_array([item1, item2])
+
+      travel_back
+    end
   end
 
   describe "GET #show" do
-    let(:concert) { create(:item) }
+    before do
+      travel_to Time.zone.local(2024, 1, 1, 12, 0, 0)
+    end
 
-    context "when queue is not required" do
-      it "assigns the requested concert to @item" do
+    after do
+      travel_back
+    end
+
+    let(:item) do
+      create(:item,
+             valid_until: 2.weeks.from_now,
+             sale_start_time: 1.day.from_now,
+             available_items: 1)
+    end
+
+    context "when item creation passes validations" do
+      it "assigns the requested item to @item" do
         get :show, params: { id: item.id }
-        expect(assigns(:item)).to(eq(item))
+        expect(assigns(:item)).to eq(item)
       end
     end
 

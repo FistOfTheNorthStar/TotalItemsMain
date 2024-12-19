@@ -1,5 +1,4 @@
-class ItemSold < ApplicationRecord
-  belongs_to :item
+class SoldItem < ApplicationRecord
   belongs_to :reservation
   belongs_to :customer
   has_one_attached :receipt

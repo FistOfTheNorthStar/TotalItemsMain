@@ -167,6 +167,8 @@ GEM
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
+    faker (3.5.1)
+      i18n (>= 1.8.11, < 2)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-arm-linux-gnu)
     ffi (1.17.0-arm64-darwin)
@@ -451,6 +453,8 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     shellany (0.0.1)
+    shoulda-matchers (6.4.0)
+      activesupport (>= 5.2.0)
     sidekiq (7.3.7)
       connection_pool (>= 2.3.0)
       logger
@@ -571,6 +575,7 @@ DEPENDENCIES
   debug
   dotenv
   factory_bot_rails
+  faker
   guard
   guard-reek
   guard-rspec
@@ -591,6 +596,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   rubocop-rspec
   selenium-webdriver
+  shoulda-matchers
   sidekiq
   simplecov
   solid_cable

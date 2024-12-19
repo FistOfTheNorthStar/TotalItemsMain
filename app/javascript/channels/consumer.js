@@ -1,2 +1,2 @@
-import { createConsumer } from "@rails/actioncable"
-export default createConsumer()
+// import { createConsumer } from "@rails/actioncable"
+// export default createConsumer()
