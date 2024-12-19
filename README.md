@@ -12,6 +12,7 @@ One line of code at a time making the world a better place....
 
 First we do BDD then when it matures move towards TDD. 
 BREAK NOW, FIX LATER, that way we get where we are going.
+
 <img src="https://github.com/user-attachments/assets/6c5a5e90-9949-4905-92cd-00d9b102de94" width="400" alt="evil cat">
 
 Won't be released until coverage 99%, there are so many ides flowing and changes are constant that a lot of tests would have been binned.
