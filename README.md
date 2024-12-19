@@ -1,8 +1,20 @@
 # README
+<img width="925" alt="Screenshot 2024-12-19 at 13 59 17" src="https://github.com/user-attachments/assets/1db084ec-d2c3-4c5c-932a-48d765fec7e4" />
 
-🌸 This a project that is not yet production ready. 🌸
-First we do BDD then when it matures move towards TDD.
+🌸 Not production ready. 🌸
+
+Next steps are fixing the queue to handle more steps and be able to handle payments.
+User login, Admin login and Super Admin logins go separately, User and Admin logins will get new views, SuperAdmin will use Administrate Dashboard.
+Device, JWT and beef up security...
+
+:peace_symbol: Fun is what it needs :peace_symbol:
+One line of code at a time making the world a better place.... 
+
+First we do BDD then when it matures move towards TDD. 
 BREAK NOW, FIX LATER, that way we get where we are going.
+![evil cat](https://github.com/user-attachments/assets/6c5a5e90-9949-4905-92cd-00d9b102de94)
+
+
 Won't be released until coverage 99%, there are so many ides flowing and changes are constant that a lot of tests would have been binned.
 
 ## DATABASE
