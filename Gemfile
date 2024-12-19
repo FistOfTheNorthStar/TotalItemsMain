@@ -36,6 +36,7 @@ group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
   gem "rspec-rails", require: false
   gem "factory_bot_rails"
+  gem "faker"
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
   gem "standard", require: false
@@ -53,10 +54,11 @@ group :development do
 end
 
 group :test do
-  gem "capybara", require: false
-  gem "selenium-webdriver", require: false
-  gem "webmock", require: false
+  gem "capybara"
+  gem "selenium-webdriver"
+  gem "webmock"
   gem "bullet"
+  gem 'shoulda-matchers'
   gem "rails-controller-testing"
-  gem "simplecov", require: false
+  gem "simplecov"
 end

@@ -1,28 +1,37 @@
 class Customer < ApplicationRecord
   belongs_to :account
-  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  has_many :item_sold
-  has_many :reservations, through: :item_sold
-  has_many :reserved_items, through: :reservations, source: :item
+  has_many :sold_items
+  has_many :reservations, through: :sold_items
+  validates :email, presence: true, format: { with: ShareVariablesConstantsRegex::VALID_EMAIL_REGEX }
   before_save :clean_inputs
 
-  private
+  def shipping_address
+    if self[:shipping_address]
+      ERB::Util.html_escape(
+        CGI.unescape(self[:shipping_address])
+      )
+    end
+  end
 
+  private
   def clean_inputs
     self.shipping_address = clean_address(shipping_address) if shipping_address.present?
     self.phone = clean_phone(phone) if phone.present?
   end
+
   def clean_address(value)
-    CGI.escape(value)
+    value
       .strip
-      .gsub(/\s+/, " ")
+      .gsub(/[[:space:]]+/, " ")
       .truncate(255, omission: "")
+      .then { |cleaned| CGI.escape(cleaned) }
   end
 
   def clean_phone(number)
     number
       .strip
-      .gsub(/[^+()0-9\-\s]/, "")
-      .gsub(/\s+/, " ")
+      .gsub(/[^+()\d\-\s]/, "")
+      .gsub(/[[:space:]]+/, "")
+      .truncate(20, omission: "")
   end
 end

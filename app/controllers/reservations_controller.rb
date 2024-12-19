@@ -54,9 +54,9 @@ class ReservationsController < ApplicationController
     # Customer creation will later go into its own view, let's just take the email for now
     create_customer(reservation_params)
 
-    job_id=ReservationProcessingJob.perform_async(@reservation.id)
+    ReservationProcessingJob.perform_in(10.seconds, @reservation.id)
     redirect_to(url_for(controller: "queue_positions", action: "status", item_id: @reservation.item_id,
-                        reservation_id: @reservation.id, job_id:))
+                        reservation_id: @reservation.id))
   end
 
 private

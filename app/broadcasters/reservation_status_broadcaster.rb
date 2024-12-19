@@ -50,5 +50,5 @@ class ReservationStatusBroadcaster
       # Better to raise an error if status doesn't exist
       raise(ReservationStatusBroadcasterError, "Status unknown")
     end
-    end
+  end
 end

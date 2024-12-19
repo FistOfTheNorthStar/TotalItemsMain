@@ -1,4 +1,6 @@
 class ReservationCleanupWithoutItemJob
+
+  # Not ran often
   def perform
     begin
       orphaned_reservations = Reservation.where.missing(:item)

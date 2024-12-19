@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_17_232144) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_19_010526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -89,19 +89,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_232144) do
     t.index ["valid_until"], name: "index_items_on_valid_until"
   end
 
-  create_table "items_sold", force: :cascade do |t|
-    t.bigint "reservation_id", null: false
-    t.bigint "customer_id", null: false
-    t.string "receipt"
-    t.string "ticket"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "uuid", null: false
-    t.index ["customer_id"], name: "index_items_sold_on_customer_id"
-    t.index ["reservation_id"], name: "index_items_sold_on_reservation_id"
-    t.index ["uuid"], name: "index_items_sold_on_uuid", unique: true
-  end
-
   create_table "reservations", force: :cascade do |t|
     t.bigint "item_id", null: false
     t.datetime "created_at", null: false
@@ -113,11 +100,24 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_232144) do
     t.index ["status"], name: "index_reservations_on_status"
   end
 
+  create_table "sold_items", force: :cascade do |t|
+    t.bigint "reservation_id", null: false
+    t.bigint "customer_id", null: false
+    t.string "receipt"
+    t.string "ticket"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "uuid", null: false
+    t.index ["customer_id"], name: "index_sold_items_on_customer_id"
+    t.index ["reservation_id"], name: "index_sold_items_on_reservation_id"
+    t.index ["uuid"], name: "index_sold_items_on_uuid", unique: true
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "customers", "accounts"
   add_foreign_key "items", "accounts"
-  add_foreign_key "items_sold", "customers"
-  add_foreign_key "items_sold", "reservations"
   add_foreign_key "reservations", "items"
+  add_foreign_key "sold_items", "customers"
+  add_foreign_key "sold_items", "reservations"
 end

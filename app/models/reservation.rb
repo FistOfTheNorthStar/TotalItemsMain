@@ -1,7 +1,7 @@
 class Reservation < ApplicationRecord
   belongs_to :item
-  has_many :item_sold
-  has_one :customer
+  has_many :sold_items, dependent: :destroy
+  has_many :customers, through: :sold_items
 
   delegate :account, to: :item
 
@@ -13,7 +13,6 @@ class Reservation < ApplicationRecord
 
   enum :status, [ :pending, :payment_begin, :payment_end, :canceled, :expired, :failed, :completed ]
 
-  scope :pending_and_expiring_soon, ->() { where(status: "pending", expires_at: Time.current..5.minutes.from_now) }
   scope :pending_and_old, -> {
     pending
       .where("created_at <= ?", 15.minutes.ago)
@@ -22,7 +21,7 @@ class Reservation < ApplicationRecord
   private
 
   def within_reservation_limit
-    if item.reservation_limit.present? &&
+    if item && quantity && item.reservation_limit.present? &&
       quantity > item.reservation_limit
       errors.add(:base, "This item has reached its reservation limit")
     end
