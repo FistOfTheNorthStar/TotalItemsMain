@@ -3,6 +3,21 @@
 
 🌸 Not production ready. 🌸
 
+It has been agreed that this project will become the backbone of a charity growing and selling trees in West Africa to offset carbon.
+
+First aims are to combine databases from various services, traffic is low.
+
+So expect changes to views, and models.
+
+State management will happen with Redis with real-time session invalidation (sessions) and notifying users is done only after successful database changes:
+Sidekiq jobs do various changes and actions, which only after successful changes in the database will notify users via perhaps websockets, but working with gRPC seeking ways to replace websockets with less overhead options, one way notification is totally fine as long as important actions such as payment confirmations are also handled by webhooks.
+So many things, ideas are being built.
+
+Goods:
+Start with low traffic, currently the pages of the charity experiences 300 hits per day, only a few jobs required, but centrally managed datase missing. Services used are not compatible, no notification system that collects everything. So this is where we start combining databases together and seeing if any of the existing can be combined.
+
+This needs to be done financially resposibly as the budget is low.
+
 Next steps are fixing the queue to handle more steps and be able to handle payments.
 User login, Admin login and Super Admin logins go separately, User and Admin logins will get new views, SuperAdmin will use Administrate Dashboard.
 Device, JWT and beef up security...
