@@ -1,36 +1,15 @@
 # README
-<img width="400" alt="Screenshot 2024-12-19 at 13 59 17" src="https://github.com/user-attachments/assets/1db084ec-d2c3-4c5c-932a-48d765fec7e4" />
 
 🌸 Not production ready. 🌸
 
-It has been agreed that this project will become the backbone of a charity growing and selling trees in West Africa to offset carbon.
+<img width="600" alt="Screenshot 2024-12-25 at 20 12 08" src="https://github.com/user-attachments/assets/2e1e20f8-11bc-49d4-b70b-d58f38e55429" />
 
-First aims are to combine databases from various services, traffic is low.
+Plant A Tree - https://www.planteenboom.nu
 
-So expect changes to views, and models.
+Project to sell more trees to offset CO2.
+Support is welcome, you can go to the site and find a way to contribute.
 
-State management will happen with Redis with real-time session invalidation (sessions) and notifying users is done only after successful database changes:
-Sidekiq jobs do various changes and actions, which only after successful changes in the database will notify users via perhaps websockets, but working with gRPC seeking ways to replace websockets with less overhead options, one way notification is totally fine as long as important actions such as payment confirmations are also handled by webhooks.
-So many things, ideas are being built.
-
-Goods:
-Start with low traffic, currently the pages of the charity experiences 300 hits per day, only a few jobs required, but centrally managed datase missing. Services used are not compatible, no notification system that collects everything. So this is where we start combining databases together and seeing if any of the existing can be combined.
-
-This needs to be done financially resposibly as the budget is low.
-
-Next steps are fixing the queue to handle more steps and be able to handle payments.
-User login, Admin login and Super Admin logins go separately, User and Admin logins will get new views, SuperAdmin will use Administrate Dashboard.
-Device, JWT and beef up security...
-
-:peace_symbol: Fun is what it needs :peace_symbol:
-One line of code at a time making the world a better place.... 
-
-First we do BDD then when it matures move towards TDD. 
-BREAK NOW, FIX LATER, that way we get where we are going.
-
-<img src="https://github.com/user-attachments/assets/6c5a5e90-9949-4905-92cd-00d9b102de94" width="400" alt="evil cat">
-
-Won't be released until coverage 99%, there are so many ides flowing and changes are constant that a lot of tests would have been binned.
+Won't be released until coverage 99%.
 
 ## DATABASE
 Using postgres, so you need to setup postgres
@@ -68,13 +47,17 @@ Check stinky code, so many opinions, I relaxed rules
 or to file
 ```bundle exec reek . --format html > reek_results.html```
 
+## Migration history
+Reason why migration history is so confusing is that the project took a big change in direction from ticket selling site to selling trees, it could be cleaned up. We will leave it to show that a project can find its destiny, even if it looked a lot different in the beginning.
+
 ## Pricing functions
 Pricing functions will have precision 15 and scale 6. US tax code has for example this type 6.1235% calculations, and there are currencies that you need to multiply by one million to dollar. 
 
 ## Sidekiq Dash
 <img width="600" alt="Screenshot 2024-12-18 at 10 57 23" src="https://github.com/user-attachments/assets/3a4f7ab4-f668-4fd7-89a7-cb46a9fb8fb5" />
-
 Sidekiq dash is at localhost:300/sidekiq
+
+We will have many more jobs <img width="300" alt="Screenshot 2024-12-19 at 13 59 17" src="https://github.com/user-attachments/assets/1db084ec-d2c3-4c5c-932a-48d765fec7e4" />
 
 ### TODO
 * Coverage to 99% once shape is alpha ready
