@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe(Customer, type: :model) do
+RSpec.describe(User, type: :model) do
   let(:account) { create(:account) }
   let(:valid_attributes) do
     {
@@ -13,12 +13,12 @@ RSpec.describe(Customer, type: :model) do
 
   describe "validations" do
     it "is valid with valid attributes" do
-      customer = Customer.new(valid_attributes)
+      customer = User.new(valid_attributes)
       expect(customer).to(be_valid)
     end
 
     it "is not valid without an email" do
-      customer = Customer.new(valid_attributes.merge(email: nil))
+      customer = User.new(valid_attributes.merge(email: nil))
       expect(customer).not_to(be_valid)
     end
 
@@ -90,7 +90,7 @@ RSpec.describe(Customer, type: :model) do
     end
 
     it "is not valid without an account" do
-      customer = Customer.new(valid_attributes.merge(account: nil))
+      customer = User.new(valid_attributes.merge(account: nil))
       expect(customer).not_to(be_valid)
     end
   end
@@ -115,7 +115,7 @@ RSpec.describe(Customer, type: :model) do
 
   describe "data cleaning" do
     describe "#clean_address" do
-      let(:customer) { Customer.new(valid_attributes) }
+      let(:customer) { User.new(valid_attributes) }
 
       it "removes extra whitespace" do
         customer.shipping_address = "123   Main   Street"
@@ -149,7 +149,7 @@ RSpec.describe(Customer, type: :model) do
     end
 
     describe "#clean_phone" do
-      let(:customer) { Customer.new(valid_attributes) }
+      let(:customer) { User.new(valid_attributes) }
 
       it "removes invalid characters" do
         customer.phone = "+1 (555) ABC-1234"

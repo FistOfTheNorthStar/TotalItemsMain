@@ -2,7 +2,7 @@ class Item < ApplicationRecord
   has_many :reservations, dependent: :destroy
   belongs_to :account
   has_many :sold_items, through: :reservations
-  has_many :customers, through: :sold_items
+  has_many :users, through: :sold_items
 
   validates :name, presence: true
   validates :date, presence: true

@@ -69,7 +69,7 @@ RSpec.describe(Account, type: :model) do
       it "destroys associated customers when destroyed" do
         customer_ids = account_with_customers.customers.pluck(:id)
         account_with_customers.destroy
-        expect(Customer.where(id: customer_ids)).to(be_empty)
+        expect(User.where(id: customer_ids)).to(be_empty)
       end
     end
   end

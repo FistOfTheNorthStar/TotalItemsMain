@@ -10,17 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_19_010526) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_26_110046) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
-
-  create_table "accounts", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "email", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_accounts_on_email", unique: true
-  end
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -60,64 +52,105 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_19_010526) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "customers", force: :cascade do |t|
+  create_table "admins", force: :cascade do |t|
+    t.string "name", null: false
     t.string "email", null: false
-    t.string "shipping_address"
-    t.string "phone"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "account_id", null: false
-    t.index ["account_id"], name: "index_customers_on_account_id"
-    t.index ["email"], name: "index_customers_on_email"
+    t.index ["email"], name: "index_admins_on_email", unique: true
   end
 
-  create_table "items", force: :cascade do |t|
+  create_table "orders", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "quantity", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.integer "type", default: 0, null: false
+    t.integer "order_status", default: 0, null: false
+    t.bigint "user_id", null: false
+    t.bigint "subscription_id"
+    t.datetime "order_completed_date"
+    t.index ["status"], name: "index_orders_on_status"
+    t.index ["subscription_id"], name: "index_orders_on_subscription_id"
+    t.index ["user_id"], name: "index_orders_on_user_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.decimal "amount", precision: 15, scale: 6, default: "0.0", null: false
+    t.string "currency", default: "EUR", null: false
+    t.integer "provider", default: 0, null: false
+    t.integer "payment_status", default: 0, null: false
+    t.string "token"
+    t.datetime "payment_confirmed_date"
+    t.string "provider_confirmation_id"
+    t.text "error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "subscription_id"
+    t.bigint "user_id", null: false
+    t.bigint "order_id"
+    t.index ["order_id"], name: "index_payments_on_order_id"
+    t.index ["payment_status"], name: "index_payments_on_payment_status"
+    t.index ["provider"], name: "index_payments_on_provider"
+    t.index ["subscription_id"], name: "index_payments_on_subscription_id"
+    t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.integer "status", default: 0, null: false
+    t.integer "payment_status", default: 0, null: false
+    t.integer "type", default: 0, null: false
+    t.integer "renew_date", default: 0, null: false
+    t.integer "number_of_trees", default: 0, null: false
+    t.decimal "fee", precision: 15, scale: 6, default: "0.0", null: false
+    t.string "currency", default: "EUR", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payment_status"], name: "index_subscriptions_on_payment_status"
+    t.index ["status"], name: "index_subscriptions_on_status"
+    t.index ["type"], name: "index_subscriptions_on_type"
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
+  create_table "trees", force: :cascade do |t|
     t.string "name"
     t.text "description"
-    t.datetime "date"
-    t.integer "total_items"
-    t.integer "available_items"
-    t.decimal "price", precision: 15, scale: 6
+    t.decimal "price", precision: 15, scale: 6, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "account_id", null: false
-    t.datetime "valid_until"
-    t.integer "reservation_limit"
-    t.datetime "sale_start_time"
-    t.index ["account_id"], name: "index_items_on_account_id"
-    t.index ["sale_start_time"], name: "index_items_on_sale_start_time"
-    t.index ["valid_until"], name: "index_items_on_valid_until"
+    t.string "currency", default: "EUR", null: false
+    t.string "gps_longitude"
+    t.string "gps_latitude"
+    t.string "new_user_email"
+    t.string "new_user_sha256"
+    t.integer "tree_state", default: 0, null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_trees_on_user_id"
   end
 
-  create_table "reservations", force: :cascade do |t|
-    t.bigint "item_id", null: false
+  create_table "users", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "address_1", default: "", null: false
+    t.string "phone", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "quantity", null: false
-    t.string "uuid"
-    t.integer "status", default: 0, null: false
-    t.index ["item_id"], name: "index_reservations_on_item_id"
-    t.index ["status"], name: "index_reservations_on_status"
-  end
-
-  create_table "sold_items", force: :cascade do |t|
-    t.bigint "reservation_id", null: false
-    t.bigint "customer_id", null: false
-    t.string "receipt"
-    t.string "ticket"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "uuid", null: false
-    t.index ["customer_id"], name: "index_sold_items_on_customer_id"
-    t.index ["reservation_id"], name: "index_sold_items_on_reservation_id"
-    t.index ["uuid"], name: "index_sold_items_on_uuid", unique: true
+    t.string "first_name", default: "", null: false
+    t.string "last_name", default: "", null: false
+    t.string "address_2", default: "", null: false
+    t.string "city", default: "", null: false
+    t.integer "country", default: 0, null: false
+    t.integer "phone_prefix", default: 0, null: false
+    t.index ["email"], name: "index_users_on_email"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "customers", "accounts"
-  add_foreign_key "items", "accounts"
-  add_foreign_key "reservations", "items"
-  add_foreign_key "sold_items", "customers"
-  add_foreign_key "sold_items", "reservations"
+  add_foreign_key "orders", "subscriptions"
+  add_foreign_key "orders", "users"
+  add_foreign_key "payments", "orders"
+  add_foreign_key "payments", "subscriptions"
+  add_foreign_key "payments", "users"
+  add_foreign_key "subscriptions", "users"
+  add_foreign_key "trees", "users"
 end

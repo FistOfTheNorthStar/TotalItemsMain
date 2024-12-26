@@ -1,7 +1,7 @@
 class Reservation < ApplicationRecord
   belongs_to :item
   has_many :sold_items, dependent: :destroy
-  has_many :customers, through: :sold_items
+  has_many :users, through: :sold_items
 
   delegate :account, to: :item
 
