@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_26_110046) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -89,6 +89,9 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_110046) do
     t.bigint "subscription_id"
     t.bigint "user_id", null: false
     t.bigint "order_id"
+    t.decimal "tax", precision: 15, scale: 6, default: "0.0", null: false
+    t.decimal "tax_percentage", precision: 5, scale: 6, default: "0.0", null: false
+    t.boolean "tax_inclusive", default: true, null: false
     t.index ["order_id"], name: "index_payments_on_order_id"
     t.index ["payment_status"], name: "index_payments_on_payment_status"
     t.index ["provider"], name: "index_payments_on_provider"
@@ -107,6 +110,9 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_110046) do
     t.string "currency", default: "EUR", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.decimal "tax", precision: 15, scale: 6, default: "0.0", null: false
+    t.decimal "tax_percentage", precision: 5, scale: 6, default: "0.0", null: false
+    t.boolean "tax_inclusive", default: true, null: false
     t.index ["payment_status"], name: "index_subscriptions_on_payment_status"
     t.index ["status"], name: "index_subscriptions_on_status"
     t.index ["type"], name: "index_subscriptions_on_type"
@@ -126,6 +132,9 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_110046) do
     t.string "new_user_sha256"
     t.integer "tree_state", default: 0, null: false
     t.bigint "user_id"
+    t.decimal "tax", precision: 15, scale: 6, default: "0.0", null: false
+    t.decimal "tax_percentage", precision: 5, scale: 6, default: "0.0", null: false
+    t.boolean "tax_inclusive", default: true, null: false
     t.index ["user_id"], name: "index_trees_on_user_id"
   end
 
