@@ -4,17 +4,17 @@
 # # Basic customer
 # customer = create(:customer)
 #
-# # Customer with reservations
+# # User with reservations
 # customer_with_reservations = create(:customer, :with_reservations)
 #
-# # Customer without address or phone
+# # User without address or phone
 # customer_minimal = create(:customer, :without_address, :without_phone)
 #
 # # Testing cleaning
 # customer_clean = create(:customer, :with_invalid_phone, :with_special_chars_address)
 
 FactoryBot.define do
-  factory :customer do
+  factory :user do
     sequence(:email) { |n| "customer#{n}@example.com" }
     shipping_address { "123 Test St, City, State 12345" }
     phone { "+1 (555) 123-4567" }

@@ -1,7 +1,5 @@
-class Customer < ApplicationRecord
-  belongs_to :account
-  has_many :sold_items
-  has_many :reservations, through: :sold_items
+class User < ApplicationRecord
+  has_many :orders
   validates :email, presence: true, format: { with: ShareVariablesConstantsRegex::VALID_EMAIL_REGEX }
   before_save :clean_inputs
 

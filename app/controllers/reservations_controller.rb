@@ -51,7 +51,7 @@ class ReservationsController < ApplicationController
       return
     end
 
-    # Customer creation will later go into its own view, let's just take the email for now
+    # User creation will later go into its own view, let's just take the email for now
     create_customer(reservation_params)
 
     ReservationProcessingJob.perform_in(10.seconds, @reservation.id)
@@ -67,7 +67,7 @@ private
 
   # This is a temporary construct
   def create_customer(params)
-    customer = Customer.build(email: params[:email])
+    customer = User.build(email: params[:email])
     customer.shipping_address = params[:shipping_address] if params[:shipping_address].present?
     customer.phone = params[:phone] if params[:phone].present?
     customer.account = @reservation.account

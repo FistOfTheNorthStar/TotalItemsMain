@@ -1,6 +1,6 @@
 class SoldItem < ApplicationRecord
   belongs_to :reservation
-  belongs_to :customer
+  belongs_to :user
   has_one_attached :receipt
   has_one_attached :ticket
   has_many_attached :attachments
