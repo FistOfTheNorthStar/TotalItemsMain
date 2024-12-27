@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -52,17 +52,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "admins", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "email", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_admins_on_email", unique: true
-  end
-
   create_table "orders", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "quantity", default: 0, null: false
     t.integer "status", default: 0, null: false
     t.integer "type", default: 0, null: false
@@ -70,6 +60,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
     t.bigint "user_id", null: false
     t.bigint "subscription_id"
     t.datetime "order_completed_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["status"], name: "index_orders_on_status"
     t.index ["subscription_id"], name: "index_orders_on_subscription_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
@@ -84,19 +76,55 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
     t.datetime "payment_confirmed_date"
     t.string "provider_confirmation_id"
     t.text "error"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.bigint "subscription_id"
     t.bigint "user_id", null: false
     t.bigint "order_id"
     t.decimal "tax", precision: 15, scale: 6, default: "0.0", null: false
     t.decimal "tax_percentage", precision: 5, scale: 6, default: "0.0", null: false
     t.boolean "tax_inclusive", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["order_id"], name: "index_payments_on_order_id"
     t.index ["payment_status"], name: "index_payments_on_payment_status"
     t.index ["provider"], name: "index_payments_on_provider"
     t.index ["subscription_id"], name: "index_payments_on_subscription_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
+  create_table "plant_a_tree_admins", force: :cascade do |t|
+    t.string "email", null: false
+    t.string "address_1", default: "", null: false
+    t.string "phone", default: "", null: false
+    t.integer "role", default: 0, null: false
+    t.string "first_name", default: "", null: false
+    t.string "title", default: "", null: false
+    t.string "important", default: "", null: false
+    t.boolean "revoked", default: false
+    t.string "last_name", default: "", null: false
+    t.string "address_2", default: "", null: false
+    t.string "city", default: "", null: false
+    t.integer "country", default: 0, null: false
+    t.integer "phone_prefix", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_plant_a_tree_admins_on_email", unique: true
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.decimal "price", precision: 15, scale: 6, default: "0.0", null: false
+    t.decimal "tax_percentage", precision: 5, scale: 2, default: "0.0", null: false
+    t.boolean "tax_inclusive", default: true, null: false
+    t.integer "type", default: 0, null: false
+    t.integer "number_available", default: 1, null: false
+    t.datetime "sales_start_date"
+    t.datetime "sales_stop_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sales_start_date"], name: "index_products_on_sales_start_date"
+    t.index ["sales_stop_date"], name: "index_products_on_sales_stop_date"
+    t.index ["type"], name: "index_products_on_type"
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -108,12 +136,14 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
     t.integer "number_of_trees", default: 0, null: false
     t.decimal "fee", precision: 15, scale: 6, default: "0.0", null: false
     t.string "currency", default: "EUR", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.bigint "product_id", null: false
     t.decimal "tax", precision: 15, scale: 6, default: "0.0", null: false
     t.decimal "tax_percentage", precision: 5, scale: 6, default: "0.0", null: false
     t.boolean "tax_inclusive", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["payment_status"], name: "index_subscriptions_on_payment_status"
+    t.index ["product_id"], name: "index_subscriptions_on_product_id"
     t.index ["status"], name: "index_subscriptions_on_status"
     t.index ["type"], name: "index_subscriptions_on_type"
     t.index ["user_id"], name: "index_subscriptions_on_user_id"
@@ -123,8 +153,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
     t.string "name"
     t.text "description"
     t.decimal "price", precision: 15, scale: 6, default: "0.0", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "currency", default: "EUR", null: false
     t.string "gps_longitude"
     t.string "gps_latitude"
@@ -132,9 +160,13 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
     t.string "new_user_sha256"
     t.integer "tree_state", default: 0, null: false
     t.bigint "user_id"
+    t.bigint "product_id"
     t.decimal "tax", precision: 15, scale: 6, default: "0.0", null: false
     t.decimal "tax_percentage", precision: 5, scale: 6, default: "0.0", null: false
     t.boolean "tax_inclusive", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id"], name: "index_trees_on_product_id"
     t.index ["user_id"], name: "index_trees_on_user_id"
   end
 
@@ -142,14 +174,14 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
     t.string "email", null: false
     t.string "address_1", default: "", null: false
     t.string "phone", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.string "first_name", default: "", null: false
     t.string "last_name", default: "", null: false
     t.string "address_2", default: "", null: false
     t.string "city", default: "", null: false
     t.integer "country", default: 0, null: false
     t.integer "phone_prefix", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email"
   end
 
@@ -160,6 +192,8 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121017) do
   add_foreign_key "payments", "orders"
   add_foreign_key "payments", "subscriptions"
   add_foreign_key "payments", "users"
+  add_foreign_key "subscriptions", "products"
   add_foreign_key "subscriptions", "users"
+  add_foreign_key "trees", "products"
   add_foreign_key "trees", "users"
 end

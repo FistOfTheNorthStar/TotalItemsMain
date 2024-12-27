@@ -51,16 +51,7 @@ class Item < ApplicationRecord
     end
   end
 
-  def self.sellable_conditions
-    current_time = Time.current
-    [
-      '(valid_until IS NULL OR valid_until > ?) AND
-     (sale_start_time IS NULL OR sale_start_time <= ?) AND
-     available_items > 0',
-      current_time,
-      current_time
-    ]
-  end
+
 
   def reservation_limit_check
     if reservations.count >= reservation_limit

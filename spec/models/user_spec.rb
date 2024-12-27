@@ -1,5 +1,18 @@
 require 'rails_helper'
 
+# SOME USE EXAMPLES FOR COUNTRY AND PHONE_PREFIX
+# user = User.new(
+#   country: :estonia,      # code 47
+#   phone_prefix: :estonia, # code 47
+#   phone: '12345678'
+# )
+# user.valid? # true
+#
+# user.country = :finland
+# user.phone_prefix = :estonia
+# user.valid? # false
+# user.errors.full_messages
+
 RSpec.describe(User, type: :model) do
   let(:account) { create(:account) }
   let(:valid_attributes) do
@@ -211,5 +224,67 @@ RSpec.describe(User, type: :model) do
       customer.valid?
       expect(customer.errors[:email]).to(include("is invalid"))
     end
+  end
+
+
+  xss_test_cases = [
+    # Unicode/encoding bypasses
+    "javascript&#58;alert(1)",
+    "javascript&#0058;alert(1)",
+    "javascript&#x3A;alert(1)",
+    "javascript\u3000:alert(1)",
+
+    # Null byte injection
+    "javascript\u0000:alert(1)",
+
+    # Exotic whitespace
+    "javascript\u2028alert(1)",
+
+    # HTML encoding variations
+    "&#106;&#97;&#118;&#97;&#115;&#99;&#114;&#105;&#112;&#116;&#58;alert(1)",
+
+    # Protocol obfuscation
+    "JaVaScRiPt:alert(1)",
+    "\u006A\u0061\u0076\u0061\u0073\u0063\u0072\u0069\u0070\u0074\u003A alert(1)",
+
+    # Data URI schemes
+    "data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==",
+
+    # Event handlers
+    "onmouseover=alert(1)",
+    "<img/src='x'onerror=alert(1)>",
+
+    # CSS with expressions
+    "<style>*{background-image:url(javascript:alert(1))}</style>",
+
+    # Meta refresh
+    "<meta http-equiv='refresh' content='0;url=javascript:alert(1)'>",
+
+    # SVG XSS
+    "<svg/onload=alert(1)>",
+    "<svg><script>alert(1)</script></svg>"
+  ]
+
+  # You can create a test method:
+  def test_sanitization
+    xss_test_cases.each do |xss|
+      sanitized = ActionController::Base.helpers.sanitize(xss, tags: [], attributes: [])
+      puts "Original: #{xss}"
+      puts "Sanitized: #{sanitized}"
+      puts "Safe? #{!sanitized.include?('script') && !sanitized.include?('javascript') && !sanitized.include?('alert')}"
+      puts "---"
+    end
+  end
+
+  # Additional test for database storage
+  def test_database_safety
+    test_user = User.create(
+      email: "<script>alert('xss')</script>@test.com",
+      name: "<img src=x onerror=alert(1)>",
+    # ... other required fields with XSS attempts
+      )
+
+    puts "Stored email: #{test_user.email}"
+    puts "Stored name: #{test_user.name}"
   end
 end
