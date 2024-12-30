@@ -8,7 +8,7 @@ Plant A Tree - https://www.planteenboom.nu
 
 Project to sell more trees to offset CO2.
 Support is welcome, you can go to the site and find a way to contribute.
-We are migrating from other services to centralized
+We are migrating one service at a time.
 
 ## DATABASE
 Using postgres, so you need to setup postgres
@@ -52,15 +52,24 @@ We will have many more jobs
 <img width="300" alt="Screenshot 2024-12-19 at 13 59 17" src="https://github.com/user-attachments/assets/1db084ec-d2c3-4c5c-932a-48d765fec7e4" />
 
 ### TODO
+
+## Phase 1
+
+* Automation
 * Coverage to 99% once shape is alpha ready
 * Add device
-* Add API for React front app
-* Remove Stimulus
+* Add API for React front app for a map showing tree locations
+* Add CSV
 * Capybara tests
-* Fix queue
 * Check if Tailwind has errors
-* Add a payment system
 * Fix administrate with session deletion
-* Make a good plan for the queue
 * Add environmental variables for passwords, redis-url
 * After structure sets in write tests to cover full project
+
+## Phase 2
+
+* Remove Stimulus
+* Payments
+* Shopify-replacement
+* Fix queue
+* Make a good plan for the queue
