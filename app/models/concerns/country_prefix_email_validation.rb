@@ -4,7 +4,7 @@ module CountryPrefixEmailValidation
 
   included do
     class_attribute :sanitized_fields, instance_writer: false
-    self.sanitized_fields = %w[ first_name last_name address_1 address_2 city phone ]
+    self.sanitized_fields = %w[ first_name last_name address_1 address_2 city phone, state ]
 
     validates :phone_prefix,
               numericality: {
@@ -31,9 +31,9 @@ module CountryPrefixEmailValidation
     sanitized_fields.each do |field|
       next unless self.respond_to?(field)
       if self[field].is_a?(String)
-        self[field] = field.to_s == "phone" ? sanitize_string_fields(self[field]) : sanitize_phone(value)
+        self[field] = field.to_s == "phone" ? sanitize_string_fields(self[field].to_s) : sanitize_phone(self[field].to_s)
       else
-        self[field] = sanitized_no_trunc(self[field])
+        self[field] = sanitized_no_trunc(self[field].to_s)
       end
     end
   end

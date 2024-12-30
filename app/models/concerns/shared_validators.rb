@@ -7,18 +7,17 @@ module SharedValidators
   end
 
   def sanitized_no_trunc(value)
-    sanitized = ActionController::Base.helpers.sanitize(value, tags: [], attributes: [])
-    sanitized
-      .strip.gsub(/[[:space:]]+/, " ")
-      .gsub(/<\/?[^>]*>/, "")
-      .gsub(/javascript:/i, "")
-      .gsub(/data:/i, "")
-      .then { |cleaned| CGI.escape(cleaned) }
+    return "" if value.blank?
+    sanitized = sanitize(value, tags: [], attributes: [])
+    sanitized.gsub(/[[:space:]]+/, " ")
+             .gsub!(/[\u0000-\u001F\u007F-\u009F]/, "")
+             .strip
   end
 
   def sanitize_phone(value)
+    return "" if value.blank?
     value
-      .gsub(/[^0-9()\- ]/, '')
+      .gsub(/[^0-9()\- ]/, "")
       .gsub(/[[:space:]]+/, "")
       .truncate(20, omission: "")
   end

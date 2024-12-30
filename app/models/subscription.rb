@@ -8,7 +8,7 @@ class Subscription < ApplicationRecord
   validates :currency, presence: true
   validates :tax_inclusive, inclusion: { in: [true, false] }
 
-  enum status: { active: 0, paused: 1, cancelled: 2 }
-  enum payment_status: { pending: 0, paid: 1, failed: 2 }
-  enum type: { monthly: 0, yearly: 1, one_time: 2 }
+  enum :status, [ :active_monthly, :active_yearly, :paused, :cancelled ]
+  enum :payment_status, [ :cycle_start, :pending, :paid, :failed, :refunded ]
+  enum :type, [ :regular, :family, :company ]
 end
