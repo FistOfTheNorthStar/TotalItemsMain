@@ -220,7 +220,7 @@ GEM
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (2.9.0)
-    jwt (2.10.0)
+    jwt (2.10.1)
       base64
     kamal (2.4.0)
       activesupport (>= 7.0)
