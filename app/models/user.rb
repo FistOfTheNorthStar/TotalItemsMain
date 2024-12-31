@@ -12,5 +12,4 @@ class User < ApplicationRecord
 
   # DO NOT CHANGE, ONLY ADD
   enum :role, [ :super_admin, :admin, :manager ]
-
 end

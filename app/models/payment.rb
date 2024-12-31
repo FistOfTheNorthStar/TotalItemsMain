@@ -8,7 +8,7 @@ class Payment < ApplicationRecord
   validates :amount, :tax, :tax_percentage, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :currency, presence: true
   validates :provider, :payment_status, presence: true
-  validates :tax_inclusive, inclusion: { in: [true, false] }
+  validates :tax_inclusive, inclusion: { in: [ true, false ] }
 
   enum :provider, [ stripe: 0, paypal: 1 ]
   enum :payment_status, [ :pending, :processing, :completed, :failed, :refunded ]

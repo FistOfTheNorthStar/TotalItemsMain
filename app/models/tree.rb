@@ -5,7 +5,7 @@ class Tree < ApplicationRecord
   validates :price, :tax, :tax_percentage, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :currency, presence: true
   validates :tree_state, presence: true
-  validates :tax_inclusive, inclusion: { in: [true, false] }
+  validates :tax_inclusive, inclusion: { in: [ true, false ] }
 
   enum :tree_state, [ :available, :reserved, :unavailable ]
 

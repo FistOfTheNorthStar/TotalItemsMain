@@ -58,7 +58,7 @@ group :test do
   gem "selenium-webdriver"
   gem "webmock"
   gem "bullet"
-  gem 'shoulda-matchers'
+  gem "shoulda-matchers"
   gem "rails-controller-testing"
   gem "simplecov"
 end

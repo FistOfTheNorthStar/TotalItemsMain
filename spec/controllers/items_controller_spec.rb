@@ -18,7 +18,7 @@ RSpec.describe(ItemsController, type: :controller) do
       puts "Total items in database: #{Item.count}"
       puts "Items returned by controller: #{assigns(:items).inspect}"
 
-      expect(assigns(:items)).to match_array([item1, item2])
+      expect(assigns(:items)).to(match_array([ item1, item2 ]))
 
       travel_back
     end
@@ -43,7 +43,7 @@ RSpec.describe(ItemsController, type: :controller) do
     context "when item creation passes validations" do
       it "assigns the requested item to @item" do
         get :show, params: { id: item.id }
-        expect(assigns(:item)).to eq(item)
+        expect(assigns(:item)).to(eq(item))
       end
     end
 

@@ -39,7 +39,6 @@ RSpec.describe(User, type: :model) do
       let(:customer) { build(:customer) }
 
       it "is not valid with invalid email formats" do
-
         invalid_emails = %w[test@ @example.com testexample.com test@example test.@example.com]
 
         invalid_emails = [
@@ -82,7 +81,7 @@ RSpec.describe(User, type: :model) do
           "test:name@example.com",
           "test/name@example.com",
           "test=name@example.com",
-          "test@example.com/dept",
+          "test@example.com/dept"
         ]
 
         invalid_emails.each do |email|
@@ -269,10 +268,10 @@ RSpec.describe(User, type: :model) do
   def test_sanitization
     xss_test_cases.each do |xss|
       sanitized = ActionController::Base.helpers.sanitize(xss, tags: [], attributes: [])
-      puts "Original: #{xss}"
-      puts "Sanitized: #{sanitized}"
-      puts "Safe? #{!sanitized.include?('script') && !sanitized.include?('javascript') && !sanitized.include?('alert')}"
-      puts "---"
+      puts("Original: #{xss}")
+      puts("Sanitized: #{sanitized}")
+      puts("Safe? #{!sanitized.include?('script') && !sanitized.include?('javascript') && !sanitized.include?('alert')}")
+      puts("---")
     end
   end
 
@@ -281,10 +280,10 @@ RSpec.describe(User, type: :model) do
     test_user = User.create(
       email: "<script>alert('xss')</script>@test.com",
       name: "<img src=x onerror=alert(1)>",
-    # ... other required fields with XSS attempts
+        # ... other required fields with XSS attempts
       )
 
-    puts "Stored email: #{test_user.email}"
-    puts "Stored name: #{test_user.name}"
+    puts("Stored email: #{test_user.email}")
+    puts("Stored name: #{test_user.name}")
   end
 end
