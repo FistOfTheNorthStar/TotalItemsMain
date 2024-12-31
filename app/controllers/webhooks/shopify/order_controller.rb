@@ -3,7 +3,7 @@ module Webhooks
     class OrderController < BaseWebhookController
       def update
         data = JSON.parse(request.raw_post)
-        p(data)
+        # TODO
         head(:ok)
       rescue JSON::ParserError
         head(:bad_request)
