@@ -27,29 +27,17 @@ module Webhooks
         end
 
         head(:ok)
-      rescue JSON::ParserError
+      rescue JSON::ParserError => e
+        Rails.logger.error(e)
         head(:bad_request)
+      rescue StandardError => e
+        Rails.logger.error(e)
+        head(:unprocessable_entity)
       end
-
-
-
-
-
-
-      if user
-        user.update(shopify_id: data["id"])
-      else
-        User.create!(user_params.merge(shopify_id: data["id"]))
-      end
-
-      head(:ok)
-    rescue StandardError => e
-      Rails.logger.error(e)
-      head(:unprocessable_entity)
 
       def delete
         data = JSON.parse(request.raw_post)
-        p(data)
+        # TODO send notification to Slack
         head(:ok)
       rescue JSON::ParserError
         head(:bad_request)
