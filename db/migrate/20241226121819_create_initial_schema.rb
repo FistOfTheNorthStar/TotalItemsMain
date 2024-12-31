@@ -51,9 +51,11 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.string :vat_number, default: '', null: false
       t.string :company_name, default: '', null: false
       t.string :salutation, default: '', null: false
+      t.bigint :shopify_id
 
       t.timestamps
-      t.index :email
+      t.index :email, unique: true
+      t.index :shopify_id, unique: true
     end
 
     create_table :subscriptions do |t|

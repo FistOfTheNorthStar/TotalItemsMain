@@ -10,11 +10,10 @@ Rails.application.routes.draw do
     end
 
   namespace :webhooks do
-    namespace do
-      post "shopify/paid" => "shopify#paid"
-      post "shopify/payment_failed" => "shopify#payment_failed"
-      post "shopify/refunded" => "shopify#refunded"
-      post "shopify/user_created" => "shopify#user_created"
+    namespace :shopify do
+      post "order_update" => "order#update"
+      post "user_created" => "user#create"
+      post "user_deleted" => "user#deleted"
     end
   end
   
