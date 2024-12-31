@@ -42,10 +42,10 @@ module Webhooks
         User.create!(user_params.merge(shopify_id: data["id"]))
       end
 
-      head :ok
+      head(:ok)
     rescue StandardError => e
       Rails.logger.error(e)
-      head :unprocessable_entity
+      head(:unprocessable_entity)
 
       def delete
         data = JSON.parse(request.raw_post)

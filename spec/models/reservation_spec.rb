@@ -22,7 +22,7 @@ RSpec.describe(Reservation, type: :model) do
 
   describe 'enums' do
     it { should define_enum_for(:status)
-                  .with_values([:pending, :payment_begin, :payment_end, :canceled, :expired, :failed, :completed]) }
+                  .with_values([ :pending, :payment_begin, :payment_end, :canceled, :expired, :failed, :completed ]) }
   end
 
   describe 'within_reservation_limit' do

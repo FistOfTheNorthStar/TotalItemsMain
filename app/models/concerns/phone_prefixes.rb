@@ -329,7 +329,7 @@ module PhonePrefixes
       "YE" => { code: 158, name: :yemen, prefix: "+967" },
       "ZM" => { code: 159, name: :zambia, prefix: "+260" },
       "ZW" => { code: 160, name: :zimbabwe, prefix: "+263" },
-      "NAN" => { code: 999, name: :nan, prefix: "+000" },
+      "NAN" => { code: 999, name: :nan, prefix: "+000" }
     }.freeze
   end
 

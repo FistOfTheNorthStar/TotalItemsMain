@@ -53,6 +53,12 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.string :salutation, default: '', null: false
       t.bigint :shopify_id
 
+      t.boolean :deactivated, default: false
+      t.integer :role, default: 0, null: false
+      t.string :vat_number, default: '', null: false
+      t.string :company_name, default: '', null: false
+      t.string :salutation, default: '', null: false
+
       t.timestamps
       t.index :email, unique: true
       t.index :shopify_id, unique: true

@@ -1,5 +1,4 @@
 class ReservationCleanupWithoutItemJob
-
   # Not ran often
   def perform
     begin
