@@ -37,27 +37,20 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
     create_table :users do |t|
       t.string :email, null: false
       t.boolean :email_opt_out, default: false, null: false
-      t.string :address_1, null: false, default: ''
-      t.string :phone, null: false, default: ''
-      t.string :first_name, null: false, default: ''
-      t.string :last_name, null: false, default: ''
-      t.string :address_2, null: false, default: ''
-      t.string :city, null: false, default: ''
-      t.string :state, null: false, default: ''
-      t.integer :country, null: false, default: 0
-      t.integer :phone_prefix, null: false, default: 0
+      t.string :address_1, default: ''
+      t.string :phone, default: ''
+      t.string :first_name, default: ''
+      t.string :last_name, default: ''
+      t.string :address_2, default: ''
+      t.string :city, default: ''
+      t.string :state, default: ''
+      t.integer :country, default: 0
+      t.integer :phone_prefix, default: 0
       t.boolean :deactivated, default: false
-      t.integer :role, default: 0, null: false
-      t.string :vat_number, default: '', null: false
-      t.string :company_name, default: '', null: false
-      t.string :salutation, default: '', null: false
-      t.bigint :shopify_id
-
-      t.boolean :deactivated, default: false
-      t.integer :role, default: 0, null: false
-      t.string :vat_number, default: '', null: false
-      t.string :company_name, default: '', null: false
-      t.string :salutation, default: '', null: false
+      t.integer :role, default: 0
+      t.string :vat_number, default: ''
+      t.string :company_name, default: ''
+      t.string :shopify_id, default: ''
 
       t.timestamps
       t.index :email, unique: true

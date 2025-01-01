@@ -3,27 +3,30 @@ module Webhooks
     class UserController < BaseWebhookController
       def create
         data = JSON.parse(request.raw_post)
-        user = User.find_by(email: data["email"])
-        country_code = data["country_code"] || "NAN"
-
-        address = data["default_address"]
-        user_params = {
-          email: data["email"],
-          first_name: data["first_name"],
-          last_name: data["last_name"],
-          address_1: address["address1"],
-          address_2: address["address2"] || "",
-          city: address["city"],
-          state: address["province"],
-          country: CountryPrefixes::COUNTRIES[country_code][:name],
-          phone: address["phone"],
-          phone_prefix: CountryPrefixes::COUNTRIES[country_code][:prefix],
-          salutation: "NAN"
-        }
+        email = data&.dig("email") || ""
+        user = User.find_by(email:)
         if user
-          user.update(shopify_id: data["id"])
+          SlackNotificationJob.perform_async("User exists but but shopify_id created or updated: #{data['email']}")
+          user.update(shopify_id: data["id"].to_s)
         else
-          User.create!(user_params.merge(shopify_id: data["id"]))
+          address = data["default_address"]
+          country_code = address&.dig("country_code") || "NAN"
+          user_params = {
+            address_1: address&.dig("address1"),
+            address_2: address&.dig("address2") || "",
+            city: address&.dig("city"),
+            country: PhonePrefixes::COUNTRIES[country_code][:code],
+            email: data["email"],
+            first_name: address&.dig("first_name"),
+            last_name: address&.dig("last_name"),
+            phone: address&.dig("phone"),
+            phone_prefix: PhonePrefixes::COUNTRIES[country_code][:code],
+            state: address&.dig("province"),
+            role: address&.dig("company") ? :company : :user,
+            company_name: address&.dig("company")
+          }
+          SlackNotificationJob.perform_async("User created in Shopify: #{data['email']}")
+          User.create!(user_params.merge(shopify_id: data["id"].to_s))
         end
 
         head(:ok)
@@ -35,9 +38,9 @@ module Webhooks
         head(:unprocessable_entity)
       end
 
-      def delete
+      def deleted
         data = JSON.parse(request.raw_post)
-        # TODO send notification to Slack
+        SlackNotificationJob.perform_async("User deleted ShopifyID: #{data['id']}")
         head(:ok)
       rescue JSON::ParserError
         head(:bad_request)
