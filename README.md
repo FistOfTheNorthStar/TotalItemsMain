@@ -10,6 +10,15 @@ Project to sell more trees to offset CO2.
 Support is welcome, you can go to the site and find a way to contribute.
 We are migrating one service at a time.
 
+## Original project cleanup
+Originally this project was a ticket selling system with a websocket reservation notifier from Sidekiq. However after discussions with PlantEnBoom and looking at their needs there are several things that had not converged thus cleaning up is needed and there are bunch of files just commented out. The discussion is different now on what is actually required.
+
+Basically the project will add Webhooks to notify the backend of any new customers or bought trees from Shopify, from ChargeBee we get the suvscriptions, and accordingly the process is automated so that only a few steps require aminds to touch anymore. CRM is updated and trees allocated to users, then customes are emailed via CRM (also automated) and there will be a link on the email where user can go and print a certificate with unique codes of each tree owned.
+
+Add some forms in React, and some self created analytics on how much C92 the user has offset.
+
+Add logic 
+
 ## DATABASE
 Using postgres, so you need to setup postgres
 On Mac
@@ -53,9 +62,6 @@ We will have many more jobs
 
 ### TODO
 
-## Phase 1
-
-* Automation
 * Coverage to 99% once shape is alpha ready
 * Add device
 * Add API for React front app for a map showing tree locations
@@ -66,10 +72,3 @@ We will have many more jobs
 * Add environmental variables for passwords, redis-url
 * After structure sets in write tests to cover full project
 
-## Phase 2
-
-* Remove Stimulus
-* Payments
-* Shopify-replacement
-* Fix queue
-* Make a good plan for the queue
