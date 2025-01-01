@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_12_17_101719) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -175,21 +175,20 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_101719) do
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.boolean "email_opt_out", default: false, null: false
-    t.string "address_1", default: "", null: false
-    t.string "phone", default: "", null: false
-    t.string "first_name", default: "", null: false
-    t.string "last_name", default: "", null: false
-    t.string "address_2", default: "", null: false
-    t.string "city", default: "", null: false
-    t.string "state", default: "", null: false
-    t.integer "country", default: 0, null: false
-    t.integer "phone_prefix", default: 0, null: false
+    t.string "address_1", default: ""
+    t.string "phone", default: ""
+    t.string "first_name", default: ""
+    t.string "last_name", default: ""
+    t.string "address_2", default: ""
+    t.string "city", default: ""
+    t.string "state", default: ""
+    t.integer "country", default: 0
+    t.integer "phone_prefix", default: 0
     t.boolean "deactivated", default: false
-    t.integer "role", default: 0, null: false
-    t.string "vat_number", default: "", null: false
-    t.string "company_name", default: "", null: false
-    t.string "salutation", default: "", null: false
-    t.bigint "shopify_id"
+    t.integer "role", default: 0
+    t.string "vat_number", default: ""
+    t.string "company_name", default: ""
+    t.string "shopify_id", default: ""
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -198,4 +197,13 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_17_101719) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "orders", "subscriptions"
+  add_foreign_key "orders", "users"
+  add_foreign_key "payments", "orders"
+  add_foreign_key "payments", "subscriptions"
+  add_foreign_key "payments", "users"
+  add_foreign_key "subscriptions", "products"
+  add_foreign_key "subscriptions", "users"
+  add_foreign_key "trees", "products"
+  add_foreign_key "trees", "users"
 end

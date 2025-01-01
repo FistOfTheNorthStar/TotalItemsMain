@@ -8,9 +8,9 @@ module SharedValidators
 
   def sanitized_no_trunc(value)
     return "" if value.blank?
-    sanitized = sanitize(value, tags: [], attributes: [])
+    sanitized = ActionController::Base.helpers.sanitize(value, tags: [], attributes: [])
     sanitized.gsub(/[[:space:]]+/, " ")
-             .gsub!(/[\u0000-\u001F\u007F-\u009F]/, "")
+             .gsub(/[\u0000-\u001F\u007F-\u009F]/, "")
              .strip
   end
 
