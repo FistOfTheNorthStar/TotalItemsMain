@@ -1,10 +1,10 @@
-# spec/controllers/webhooks/shopify/user_controller_spec.rb
 require 'rails_helper'
+require 'webmock/rspec'
 
 RSpec.describe(Webhooks::Shopify::UserController, type: :controller) do
   let(:shopify_data) do
     {
-      "id" => 123456789,
+      "id" => "123456789",
       "email" => "test@example.com",
       "default_address" => {
         "address1" => "123 Test St",
@@ -21,6 +21,9 @@ RSpec.describe(Webhooks::Shopify::UserController, type: :controller) do
   let(:hmac) { 'valid_hmac' }
 
   before do
+    WebMock.disable_net_connect!(allow_localhost: true)
+    stub_request(:post, ENV['SLACK_WEBHOOK_URL'])
+      .to_return(status: 200)
     allow_any_instance_of(described_class).to(receive(:verify_webhook).and_return(true))
     request.headers['HTTP_X_SHOPIFY_HMAC_SHA256'] = hmac
   end
@@ -34,6 +37,12 @@ RSpec.describe(Webhooks::Shopify::UserController, type: :controller) do
 
         expect(response).to(have_http_status(:ok))
         expect(User.last.email).to(eq(shopify_data["email"]))
+      end
+
+      it 'enqueues a slack notification' do
+        expect {
+          post(:create, body: shopify_data.to_json)
+        }.to(change(SlackNotificationJob.jobs, :size).by(1))
       end
 
       it 'updates existing user shopify_id' do
