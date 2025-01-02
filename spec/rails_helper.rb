@@ -1,5 +1,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
+require 'sidekiq/testing'
+
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
@@ -40,6 +42,9 @@ RSpec.configure do |config|
   ]
   config.include(ActiveSupport::Testing::TimeHelpers)
 
+  config.before(:each) do
+    Sidekiq::Testing.fake!
+  end
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
