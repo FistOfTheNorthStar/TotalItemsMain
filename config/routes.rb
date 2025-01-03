@@ -11,7 +11,9 @@ Rails.application.routes.draw do
 
   namespace :webhooks do
     namespace :shopify do
-      post "order_update" => "order#update"
+      post "order_cancelled" => "order#cancel"
+      post "order_fulfilled" => "order#fulfill"
+      post "order_refunded" => "order#refund"
       post "user_created" => "user#create"
       post "user_deleted" => "user#deleted"
     end

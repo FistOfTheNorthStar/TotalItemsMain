@@ -1,0 +1,106 @@
+{
+  "id": 6682148929800,
+  "admin_graphql_api_id": "gid://shopify/Order/6682148929800",
+  "app_id": 1354745,
+  "browser_ip": "81.59.3.222",
+  "buyer_accepts_marketing": false,
+  "confirmation_number": "5TFXAYM0L",
+  "confirmed": true,
+  "created_at": "2025-01-02T17:57:15-05:00",
+  "closed_at": "2025-01-02T17:57:40-05:00",
+  "updated_at": "2025-01-02T17:57:40-05:00",
+  "currency": "EUR",
+  "email": "",
+  "financial_status": "paid",
+  "fulfillment_status": "fulfilled",
+  "name": "#1001",
+  "number": 1,
+  "order_number": 1001,
+  "order_status_url": "https://test-plantenboom.myshopify.com/91277459720/orders/19c9845ed1faaf18631b2af4f1ec67ac/authenticate?key=750097b9f952da144d909b089051e8e3",
+  "source_name": "shopify_draft_order",
+  "test": false,
+
+  "client_details": {
+    "browser_ip": "81.59.3.222",
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15"
+  },
+
+  "current_totals": {
+    "subtotal_price": "10.00",
+    "total_price": "10.00",
+    "total_tax": "0.00",
+    "total_discounts": "0.00",
+    "total_shipping": "0.00",
+    "total_outstanding": "0.00"
+  },
+
+  "price_sets": {
+    "current_subtotal_price_set": {
+      "shop_money": {
+        "amount": "10.00",
+        "currency_code": "EUR"
+      },
+      "presentment_money": {
+        "amount": "10.00",
+        "currency_code": "EUR"
+      }
+    }
+  },
+
+  "line_items": [
+    {
+      "id": 15926114287880,
+      "admin_graphql_api_id": "gid://shopify/LineItem/15926114287880",
+      "current_quantity": 1,
+      "fulfillable_quantity": 0,
+      "fulfillment_service": "manual",
+      "fulfillment_status": "fulfilled",
+      "name": "Tree",
+      "price": "10.00",
+      "price_set": {
+        "shop_money": {
+          "amount": "10.00",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "10.00",
+          "currency_code": "EUR"
+        }
+      },
+      "product_exists": true,
+      "product_id": 9600502006024,
+      "quantity": 1,
+      "requires_shipping": false,
+      "taxable": false,
+      "title": "Tree",
+      "variant_id": 50525059973384,
+      "variant_inventory_management": "shopify",
+      "vendor": "Test-PlantEnBoom"
+    }
+  ],
+
+  "fulfillments": [
+    {
+      "id": 6064963780872,
+      "admin_graphql_api_id": "gid://shopify/Fulfillment/6064963780872",
+      "created_at": "2025-01-02T17:57:40-05:00",
+      "location_id": 102884638984,
+      "name": "#1001.1",
+      "order_id": 6682148929800,
+      "service": "manual",
+      "status": "success",
+      "updated_at": "2025-01-02T17:57:40-05:00",
+      "line_items": [
+        {
+          "id": 15926114287880,
+          "current_quantity": 1,
+          "fulfillable_quantity": 0,
+          "fulfillment_status": "fulfilled",
+          "name": "Tree",
+          "price": "10.00",
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+}
