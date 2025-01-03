@@ -2,7 +2,6 @@ require 'rails_helper'
 require 'webmock/rspec'
 
 RSpec.describe(Webhooks::Shopify::OrderController, type: :controller) do
-
   let(:order_cancelled) { File.read(Rails.root.join("spec", "fixtures", "shopify", "order_cancelled.json")) }
   let(:order_refunded) { File.read(Rails.root.join("spec", "fixtures", "shopify", "order_refunded.json")) }
   let(:order_fulfilled) { File.read(Rails.root.join("spec", "fixtures", "shopify", "order_fulfilled.json")) }
