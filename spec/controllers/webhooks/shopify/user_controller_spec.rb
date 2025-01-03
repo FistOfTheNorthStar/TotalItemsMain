@@ -1,3 +1,4 @@
+# spec/controllers/webhooks/shopify/user_controller_spec.rb
 require 'rails_helper'
 require 'webmock/rspec'
 
