@@ -3,7 +3,7 @@ module Webhooks
     class OrderController < BaseWebhookController
       def cancel
         data = JSON.parse(request.raw_post)
-        p data
+        p(data)
         SlackNotificationJob.perform_async("Order cancelled: #{data['email']}")
 
         head(:ok)
@@ -13,7 +13,7 @@ module Webhooks
 
       def fulfill
         data = JSON.parse(request.raw_post)
-        p data
+        p(data)
         SlackNotificationJob.perform_async("Order fulfilled: #{data['email']}")
 
         head(:ok)
@@ -23,7 +23,7 @@ module Webhooks
 
       def refund
         data = JSON.parse(request.raw_post)
-        p data
+        p(data)
         SlackNotificationJob.perform_async("Order refunded: #{data['email']}")
         head(:ok)
       rescue JSON::ParserError
