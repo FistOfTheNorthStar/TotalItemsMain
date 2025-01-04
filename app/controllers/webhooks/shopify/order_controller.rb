@@ -1,33 +1,100 @@
 module Webhooks
   module Shopify
     class OrderController < BaseWebhookController
-      def cancel
-        data = JSON.parse(request.raw_post)
-        p(data)
-        SlackNotificationJob.perform_async("Order cancelled: #{data['email']}")
-
-        head(:ok)
-      rescue JSON::ParserError
-        head(:bad_request)
-      end
-
       def fulfill
-        data = JSON.parse(request.raw_post)
-        p(data)
-        SlackNotificationJob.perform_async("Order fulfilled: #{data['email']}")
+        webhook_data = JSON.parse(request.raw_post)
+        return head(:ok) unless webhook_data["fulfillment_status"] == "fulfilled"
 
-        head(:ok)
+        order = Order.find_or_initialize_by(
+          shopify_order_id: webhook_data["id"]
+        )
+
+        product_sku = webhook_data["line_items"].first["sku"]
+
+        order.assign_attributes(
+          quantity: webhook_data["line_items"].sum { |item| item["quantity"] },
+          order_status: :fulfilled,
+          product_type: product_sku,
+          user_id: find_or_create_user(webhook_data),
+          order_completed_date: webhook_data["closed_at"]
+        )
+
+        if order.save
+          SlackNotificationJob.perform_async("Order fulfilled: #{webhook_data['email']}")
+          head(:ok)
+        else
+          head(:unprocessable_entity)
+        end
       rescue JSON::ParserError
         head(:bad_request)
       end
 
       def refund
         data = JSON.parse(request.raw_post)
-        p(data)
-        SlackNotificationJob.perform_async("Order refunded: #{data['email']}")
+        Order.find_by!(shopify_order_id: data["id"]).update!(order_status: :refunded)
+        SlackNotificationJob.perform_async("Order refunded: #{data['id']}")
         head(:ok)
       rescue JSON::ParserError
         head(:bad_request)
+      end
+
+      def cancel
+        data = JSON.parse(request.raw_post)
+        order = Order.find_by(shopify_order_id: data["id"])
+        return unless order.present?
+        order.update!(order_status: :cancelled)
+        SlackNotificationJob.perform_async("Order cancelled: #{data['id']}")
+        head(:ok)
+      rescue JSON::ParserError
+        head(:bad_request)
+      end
+
+      private
+
+      def find_or_create_user(webhook_data)
+        email = webhook_data["email"]
+        customer = webhook_data["customer"]
+
+        if customer.blank? && email.blank?
+          SlackNotificationJob.perform_async("Order fulfilled without a customer and email #{webhook_data['id']}")
+          return nil
+        end
+
+        if customer.blank?
+          user = User.find_by(email:)
+          return user.id if user
+          SlackNotificationJob.perform_async("User created without ShopifyID #{email}")
+          User.create!(email:).id
+        else
+          user = User.find_by(email: customer["email"])
+
+          if user
+            user.update(shopify_id: customer["id"].to_s)
+            return user.id
+          end
+
+          address = customer["default_address"]
+          country_code = address&.dig("country_code") || "NAN"
+
+          user_params = {
+            address_1: address&.dig("address1"),
+            address_2: address&.dig("address2") || "",
+            city: address&.dig("city"),
+            country: PhonePrefixes::COUNTRIES[country_code][:code],
+            email: customer["email"],
+            first_name: address&.dig("first_name"),
+            last_name: address&.dig("last_name"),
+            phone: address&.dig("phone"),
+            phone_prefix: PhonePrefixes::COUNTRIES[country_code][:code],
+            state: address&.dig("province"),
+            role: address&.dig("company") ? :company : :user,
+            company_name: address&.dig("company"),
+            shopify_id: customer["id"].to_s
+          }
+
+          SlackNotificationJob.perform_async("User created in Shopify: #{email}")
+          User.create!(user_params).id
+        end
       end
     end
   end

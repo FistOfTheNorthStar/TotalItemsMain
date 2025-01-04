@@ -2,6 +2,8 @@ class Tree < ApplicationRecord
   belongs_to :user, optional: true
   include SharedValidators
 
+  belongs_to :user
+
   validates :price, :tax, :tax_percentage, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :currency, presence: true
   validates :tree_state, presence: true

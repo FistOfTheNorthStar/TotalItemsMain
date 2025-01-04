@@ -25,8 +25,8 @@ module Webhooks
             role: address&.dig("company") ? :company : :user,
             company_name: address&.dig("company")
           }
-          SlackNotificationJob.perform_async("User created in Shopify: #{data['email']}")
           User.create!(user_params.merge(shopify_id: data["id"].to_s))
+          SlackNotificationJob.perform_async("User created in Shopify: #{data['email']}")
         end
 
         head(:ok)

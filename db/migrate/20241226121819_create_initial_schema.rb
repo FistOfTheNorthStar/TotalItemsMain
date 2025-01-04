@@ -76,15 +76,17 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
     end
 
     create_table :orders do |t|
-      t.integer :quantity, null: false, default: 0
-      t.integer :status, null: false, default: 0
-      t.integer :type, null: false, default: 0
+      t.integer :quantity, null: false, default: 1
+      t.integer :product_type, null: false, default: 0
       t.integer :order_status, null: false, default: 0
-      t.references :user, null: false, foreign_key: true
+      t.string :shopify_order_id, default: '', null: false
+      t.string :shopify_product_id, default: '', null: false
+      t.references :user, foreign_key: true
       t.references :subscription, foreign_key: true
+      t.references :product, foreign_key: true
       t.datetime :order_completed_date
       t.timestamps
-      t.index :status
+      t.index :order_status
     end
 
     create_table :payments do |t|
