@@ -4,23 +4,22 @@ module Webhooks
       def fulfill
         webhook_data = JSON.parse(request.raw_post)
         return head(:ok) unless webhook_data["fulfillment_status"] == "fulfilled"
+        return head(:ok) if Order.find_by(shopify_order_id: webhook_data["id"])
 
-        order = Order.find_or_initialize_by(
-          shopify_order_id: webhook_data["id"]
-        )
-
+        order = Order.new(shopify_order_id: webhook_data["id"])
         product_sku = webhook_data["line_items"].first["sku"]
 
+        email_and_user_id = find_or_create_user(webhook_data)
         order.assign_attributes(
           quantity: webhook_data["line_items"].sum { |item| item["quantity"] },
           order_status: :fulfilled,
           product_type: product_sku,
-          user_id: find_or_create_user(webhook_data),
+          user_id: email_and_user_id[:id],
           order_completed_date: webhook_data["closed_at"]
         )
 
         if order.save
-          SlackNotificationJob.perform_async("Order fulfilled: #{webhook_data['email']}")
+          SlackNotificationJob.perform_async("Order fulfilled: #{email_and_user_id[:email]}, id #{webhook_data['id']}, sku #{product_sku}")
           head(:ok)
         else
           head(:unprocessable_entity)
@@ -57,20 +56,20 @@ module Webhooks
 
         if customer.blank? && email.blank?
           SlackNotificationJob.perform_async("Order fulfilled without a customer and email #{webhook_data['id']}")
-          return nil
+          return { id: nil, email: nil }
         end
 
         if customer.blank?
           user = User.find_by(email:)
-          return user.id if user
+          return { id: user.id, email: } if user
           SlackNotificationJob.perform_async("User created without ShopifyID #{email}")
-          User.create!(email:).id
+          { id: User.create!(email:).id, email: }
         else
           user = User.find_by(email: customer["email"])
 
           if user
             user.update(shopify_id: customer["id"].to_s)
-            return user.id
+            return { id: user.id, email: customer["email"] }
           end
 
           address = customer["default_address"]
@@ -92,8 +91,8 @@ module Webhooks
             shopify_id: customer["id"].to_s
           }
 
-          SlackNotificationJob.perform_async("User created in Shopify: #{email}")
-          User.create!(user_params).id
+          SlackNotificationJob.perform_async("User created in Shopify: #{customer["email"]}, #{customer["id"]}")
+          { id: User.create!(user_params).id, email: customer["email"] }
         end
       end
     end
