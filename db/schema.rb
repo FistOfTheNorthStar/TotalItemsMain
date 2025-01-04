@@ -53,16 +53,19 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
   end
 
   create_table "orders", force: :cascade do |t|
-    t.integer "quantity", default: 0, null: false
-    t.integer "status", default: 0, null: false
-    t.integer "type", default: 0, null: false
+    t.integer "quantity", default: 1, null: false
+    t.integer "product_type", default: 0, null: false
     t.integer "order_status", default: 0, null: false
-    t.bigint "user_id", null: false
+    t.string "shopify_order_id", default: "", null: false
+    t.string "shopify_product_id", default: "", null: false
+    t.bigint "user_id"
     t.bigint "subscription_id"
+    t.bigint "product_id"
     t.datetime "order_completed_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["status"], name: "index_orders_on_status"
+    t.index ["order_status"], name: "index_orders_on_order_status"
+    t.index ["product_id"], name: "index_orders_on_product_id"
     t.index ["subscription_id"], name: "index_orders_on_subscription_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
@@ -197,6 +200,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "orders", "products"
   add_foreign_key "orders", "subscriptions"
   add_foreign_key "orders", "users"
   add_foreign_key "payments", "orders"

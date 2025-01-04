@@ -1,12 +1,12 @@
 class Order < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
   belongs_to :subscription, optional: true
-  has_many :payments
+  belongs_to :payment, optional: true
 
-  validates :quantity, :status, :type, :order_status, presence: true
+  validates :quantity, :order_status, :product_type, presence: true
   validates :quantity, numericality: { greater_than_or_equal_to: 0 }
 
-  enum :status, [ :pending, :confirmed, :cancelled ]
-  enum :type, [ :one_time, :subscription ]
-  enum :order_status, [ :created, :processing, :completed, :failed ]
+  enum :order_status, [ :fulfilled, :refunded, :cancelled, :subscription, :payment ]
+
+  enum :product_type, %w[01 02 03 04 05 014 boompje]
 end
