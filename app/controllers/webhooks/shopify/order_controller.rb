@@ -10,8 +10,10 @@ module Webhooks
         product_sku = webhook_data["line_items"].first["sku"]
 
         email_and_user_id = find_or_create_user(webhook_data)
+        quantity = webhook_data["line_items"].sum { |item| item["quantity"] }
+        email_and_user_id = find_or_create_user(webhook_data)
         order.assign_attributes(
-          quantity: webhook_data["line_items"].sum { |item| item["quantity"] },
+          quantity:,
           order_status: :fulfilled,
           product_type: product_sku,
           user_id: email_and_user_id[:id],
@@ -19,7 +21,10 @@ module Webhooks
         )
 
         if order.save
-          SlackNotificationJob.perform_async("Order fulfilled: #{email_and_user_id[:email]}, id #{webhook_data['id']}, sku #{product_sku}")
+          SlackNotificationJob.perform_async(
+            "Order fulfilled: #{email_and_user_id[:email]}, id #{webhook_data['id']}, " \
+              "sku #{product_sku}, q #{quantity}"
+          )
           head(:ok)
         else
           head(:unprocessable_entity)

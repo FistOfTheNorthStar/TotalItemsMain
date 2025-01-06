@@ -58,14 +58,17 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
     t.integer "order_status", default: 0, null: false
     t.string "shopify_order_id", default: "", null: false
     t.string "shopify_product_id", default: "", null: false
+    t.boolean "order_processed", default: false, null: false
     t.bigint "user_id"
     t.bigint "subscription_id"
     t.bigint "product_id"
     t.datetime "order_completed_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["order_processed"], name: "index_orders_on_order_processed"
     t.index ["order_status"], name: "index_orders_on_order_status"
     t.index ["product_id"], name: "index_orders_on_product_id"
+    t.index ["product_type"], name: "index_orders_on_product_type"
     t.index ["subscription_id"], name: "index_orders_on_subscription_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
