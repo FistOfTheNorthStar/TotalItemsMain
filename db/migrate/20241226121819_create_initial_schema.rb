@@ -51,9 +51,11 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.string :vat_number, default: ''
       t.string :company_name, default: ''
       t.string :shopify_id, default: ''
+      t.string :chargebee_id, default: ''
 
       t.timestamps
       t.index :email, unique: true
+      t.index :chargebee_id, unique: true
       t.index :shopify_id, unique: true
     end
 
@@ -81,12 +83,15 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.integer :order_status, null: false, default: 0
       t.string :shopify_order_id, default: '', null: false
       t.string :shopify_product_id, default: '', null: false
+      t.boolean :order_processed, default: false, null: false
       t.references :user, foreign_key: true
       t.references :subscription, foreign_key: true
       t.references :product, foreign_key: true
       t.datetime :order_completed_date
       t.timestamps
       t.index :order_status
+      t.index :product_type
+      t.index :order_processed
     end
 
     create_table :payments do |t|

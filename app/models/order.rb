@@ -8,5 +8,5 @@ class Order < ApplicationRecord
 
   enum :order_status, [ :fulfilled, :refunded, :cancelled, :subscription, :payment ]
 
-  enum :product_type, %w[01 02 03 04 05 014 boompje]
+  enum :product_type, { "01": 0, "02": 1, "03": 2, "04": 3, "05": 4, "014": 5, "boompje": 6 }
 end

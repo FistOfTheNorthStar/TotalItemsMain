@@ -17,6 +17,10 @@ Rails.application.routes.draw do
       post "user_created" => "user#create"
       post "user_deleted" => "user#deleted"
     end
+
+    namespace :chargebee do
+      post "customers", to: "user#handle"
+    end
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
