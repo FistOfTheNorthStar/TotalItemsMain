@@ -11,6 +11,7 @@ module Webhooks
 
         email_and_user_id = find_or_create_user(webhook_data)
         quantity = webhook_data["line_items"].sum { |item| item["quantity"] }
+        email_and_user_id = find_or_create_user(webhook_data)
         order.assign_attributes(
           quantity:,
           order_status: :fulfilled,
