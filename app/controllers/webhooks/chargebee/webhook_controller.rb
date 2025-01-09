@@ -1,6 +1,6 @@
 module Webhooks
   module Chargebee
-    class UserController < ApplicationController
+    class WebhookController < ApplicationController
       skip_before_action :verify_authenticity_token
       before_action :verify_chargebee_webhook
 
