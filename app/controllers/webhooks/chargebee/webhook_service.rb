@@ -1,6 +1,6 @@
 module Webhooks
   module Chargebee
-    class CustomerService
+    class WebhookService
       def self.map_billing_address(billing_address)
         return {} unless billing_address
 
@@ -27,3 +27,4 @@ module Webhooks
       end
     end
   end
+end
