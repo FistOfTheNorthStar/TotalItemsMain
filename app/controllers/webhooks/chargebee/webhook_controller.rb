@@ -1,54 +1,30 @@
 module Webhooks
   module Chargebee
     class WebhookController < ApplicationController
-      skip_before_action :verify_authenticity_token
       before_action :verify_chargebee_webhook
 
       def handle
-        event_type = params[:event_type]
-        customer = params[:content][:customer]
+        event = params.permit!.to_h
+        event_type = event["event_type"]
 
-        case event_type
-        when "customer_created"
-          handle_customer_created(customer)
-        when "customer_deleted"
-          handle_customer_deleted(customer)
-        else
-          return head(:bad_request)
-        end
+        WebhookService.new(event, event_type).process
 
-        head(:ok)
-      rescue StandardError => e
-        Rails.logger.error("ChargeBee webhook error: #{e.message}")
-        head(:unprocessable_entity)
-      end
+        head :ok
+      rescue => e
+        Rails.logger.error("Chargebee Webhook Error: #{e.message}")
+        head :unprocessable_entity
 
       private
 
-      def handle_customer_created(customer_data)
-        User.create_or_update_from_chargebee(customer_data)
-      end
-
-      def handle_customer_deleted(customer_data)
-        user = User.find_by(chargebee_id: customer_data[:id])
-        user&.update!(deactivated: true)
-      end
-
       def verify_chargebee_webhook
-        return head(:unauthorized) unless valid_chargebee_webhook?
+        head(:ok) unless authenticate # no point in retrying if authenticqtio fails
       end
 
-      def valid_chargebee_webhook?
-        signature = request.headers["X-Chargebee-Signature"]
-        return false unless signature.present?
-
-        expected_signature = OpenSSL::HMAC.hexdigest(
-          "sha256",
-          ENV["CHARGEBEE_WEBHOOK_SECRET"],
-          request.raw_post
-        )
-
-        ActiveSupport::SecurityUtils.secure_compare(signature, expected_signature)
+      def authenticate
+        authenticate_or_request_with_http_basic do |username, password|
+          ActiveSupport::SecurityUtils.secure_compare(username, CHARGEBEE_WEBHOOK_USERNAME) &
+            ActiveSupport::SecurityUtils.secure_compare(password, CHARGEBEE_WEBHOOK_PASSWORD)
+        end
       end
     end
   end
