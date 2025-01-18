@@ -4,7 +4,6 @@ module Webhooks
       before_action :verify_chargebee_webhook
 
       def handle
-        p params
         event = params.permit!.to_h
         event_type = event["event_type"]
 
