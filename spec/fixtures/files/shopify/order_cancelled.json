@@ -76,21 +76,21 @@
   "device_id": null,
   "discount_codes": [],
   "duties_included": false,
-  "email": "jon@example.com",
+  "email": "test@example.com",
   "estimated_taxes": false,
   "financial_status": "voided",
   "fulfillment_status": null,
   "landing_site": null,
   "landing_site_ref": null,
   "location_id": null,
-  "merchant_business_entity_id": "MTU0ODM4MDAwOQ",
+  "merchant_business_entity_id": "XXJJJSS",
   "merchant_of_record_app_id": null,
   "name": "#9999",
   "note": null,
   "note_attributes": [],
   "number": 234,
   "order_number": 1234,
-  "order_status_url": "https://jsmith.myshopify.com/548380009/orders/123456abcd/authenticate?key=abcdefg",
+  "order_status_url": "https://jsmith.myshopify.com/2345432/orders/123456abcd/authenticate?key=abcdefg",
   "original_total_additional_fees_set": null,
   "original_total_duties_set": null,
   "payment_gateway_names": [
@@ -220,8 +220,8 @@
     "province_code": "KY"
   },
   "customer": {
-    "id": 115310627314723954,
-    "email": "john@example.com",
+    "id": 11531064444443954,
+    "email": "test@example.com",
     "created_at": null,
     "updated_at": null,
     "first_name": "John",
@@ -234,10 +234,10 @@
     "phone": null,
     "currency": "USD",
     "tax_exemptions": [],
-    "admin_graphql_api_id": "gid://shopify/Customer/115310627314723954",
+    "admin_graphql_api_id": "gid://shopify/Customer/11531064444443954",
     "default_address": {
-      "id": 715243470612851245,
-      "customer_id": 115310627314723954,
+      "id": 71524341234545,
+      "customer_id": 11531064444443954,
       "first_name": null,
       "last_name": null,
       "company": null,
@@ -263,7 +263,7 @@
       "admin_graphql_api_id": "gid://shopify/LineItem/866550311766439020",
       "attributed_staffs": [
         {
-          "id": "gid://shopify/StaffMember/902541635",
+          "id": "gid://shopify/StaffMember/23456789",
           "quantity": 1
         }
       ],

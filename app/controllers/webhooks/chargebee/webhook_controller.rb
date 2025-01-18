@@ -13,6 +13,7 @@ module Webhooks
       rescue => e
         Rails.logger.error("Chargebee Webhook Error: #{e.message}")
         head :unprocessable_entity
+      end
 
       private
 

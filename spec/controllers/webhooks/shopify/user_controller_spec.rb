@@ -46,7 +46,7 @@ RSpec.describe(Webhooks::Shopify::UserController, type: :controller) do
         }.to(change(SlackNotificationJob.jobs, :size).by(1))
 
         last_job = SlackNotificationJob.jobs.last
-        expect(last_job["args"]).to(eq([ "User deleted ShopifyID: 706405506930370084" ]))
+        expect(last_job["args"]).to(eq([ "User deleted ShopifyID: 706422226930370014" ]))
       end
 
       it 'updates existing user shopify_id' do

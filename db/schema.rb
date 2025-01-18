@@ -55,21 +55,20 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
   create_table "orders", force: :cascade do |t|
     t.integer "quantity", default: 1, null: false
     t.integer "product_type", default: 0, null: false
+    t.string "gift_email"
     t.integer "order_status", default: 0, null: false
     t.string "shopify_order_id", default: "", null: false
     t.string "shopify_product_id", default: "", null: false
     t.boolean "order_processed", default: false, null: false
     t.bigint "user_id"
-    t.bigint "subscription_id"
-    t.bigint "product_id"
+    t.bigint "payment_id"
     t.datetime "order_completed_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["order_processed"], name: "index_orders_on_order_processed"
     t.index ["order_status"], name: "index_orders_on_order_status"
-    t.index ["product_id"], name: "index_orders_on_product_id"
+    t.index ["payment_id"], name: "index_orders_on_payment_id"
     t.index ["product_type"], name: "index_orders_on_product_type"
-    t.index ["subscription_id"], name: "index_orders_on_subscription_id"
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
@@ -82,17 +81,15 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
     t.datetime "payment_confirmed_date"
     t.string "provider_confirmation_id"
     t.text "error"
-    t.bigint "subscription_id"
+    t.string "error_code"
     t.bigint "user_id", null: false
-    t.bigint "order_id"
+    t.decimal "refund_amount", precision: 15, scale: 6
     t.decimal "tax", precision: 15, scale: 6, default: "0.0", null: false
     t.decimal "tax_percentage", precision: 5, scale: 6, default: "0.0", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["order_id"], name: "index_payments_on_order_id"
     t.index ["payment_status"], name: "index_payments_on_payment_status"
     t.index ["provider"], name: "index_payments_on_provider"
-    t.index ["subscription_id"], name: "index_payments_on_subscription_id"
     t.index ["user_id"], name: "index_payments_on_user_id"
   end
 
@@ -115,44 +112,6 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
     t.index ["email"], name: "index_plant_a_tree_admins_on_email", unique: true
   end
 
-  create_table "products", force: :cascade do |t|
-    t.string "name", null: false
-    t.text "description"
-    t.decimal "price", precision: 15, scale: 6, default: "0.0", null: false
-    t.boolean "show_price", default: true, null: false
-    t.decimal "tax_percentage", precision: 5, scale: 2, default: "0.0", null: false
-    t.integer "type", default: 0, null: false
-    t.integer "number_available", default: 1
-    t.datetime "sales_start_date"
-    t.datetime "sales_stop_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["sales_start_date"], name: "index_products_on_sales_start_date"
-    t.index ["sales_stop_date"], name: "index_products_on_sales_stop_date"
-    t.index ["type"], name: "index_products_on_type"
-  end
-
-  create_table "subscriptions", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.integer "status", default: 0, null: false
-    t.integer "payment_status", default: 0, null: false
-    t.integer "type", default: 0, null: false
-    t.integer "renew_date", default: 0, null: false
-    t.integer "number_of_trees", default: 0, null: false
-    t.decimal "fee", precision: 15, scale: 6, default: "0.0", null: false
-    t.integer "currency", default: 0, null: false
-    t.bigint "product_id", null: false
-    t.decimal "tax", precision: 15, scale: 6, default: "0.0", null: false
-    t.decimal "tax_percentage", precision: 5, scale: 6, default: "0.0", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["payment_status"], name: "index_subscriptions_on_payment_status"
-    t.index ["product_id"], name: "index_subscriptions_on_product_id"
-    t.index ["status"], name: "index_subscriptions_on_status"
-    t.index ["type"], name: "index_subscriptions_on_type"
-    t.index ["user_id"], name: "index_subscriptions_on_user_id"
-  end
-
   create_table "trees", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -162,19 +121,18 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
     t.decimal "gps_longitude", precision: 11, scale: 8
     t.decimal "gps_latitude", precision: 10, scale: 8
     t.integer "tree_batch", default: 0, null: false
+    t.integer "tree_type", default: 0, null: false
     t.datetime "reserved"
     t.string "tree_code", default: "", null: false
     t.string "new_user_email"
     t.string "new_user_sha256"
     t.integer "tree_state", default: 0, null: false
     t.bigint "user_id"
-    t.bigint "product_id"
     t.decimal "tax", precision: 15, scale: 6, default: "0.0", null: false
     t.decimal "tax_percentage", precision: 5, scale: 6, default: "0.0", null: false
     t.boolean "tax_inclusive", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["product_id"], name: "index_trees_on_product_id"
     t.index ["user_id"], name: "index_trees_on_user_id"
   end
 
@@ -195,22 +153,20 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
     t.string "vat_number", default: ""
     t.string "company_name", default: ""
     t.string "shopify_id", default: ""
+    t.string "chargebee_id", default: ""
+    t.integer "subscription_tree_type", default: 0, null: false
+    t.integer "subscription_number_of_trees", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["chargebee_id"], name: "index_users_on_chargebee_id"
     t.index ["email"], name: "index_users_on_email", unique: true
-    t.index ["shopify_id"], name: "index_users_on_shopify_id", unique: true
+    t.index ["shopify_id"], name: "index_users_on_shopify_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "orders", "products"
-  add_foreign_key "orders", "subscriptions"
+  add_foreign_key "orders", "payments"
   add_foreign_key "orders", "users"
-  add_foreign_key "payments", "orders"
-  add_foreign_key "payments", "subscriptions"
   add_foreign_key "payments", "users"
-  add_foreign_key "subscriptions", "products"
-  add_foreign_key "subscriptions", "users"
-  add_foreign_key "trees", "products"
   add_foreign_key "trees", "users"
 end
