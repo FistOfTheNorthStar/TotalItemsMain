@@ -66,7 +66,7 @@ RSpec.describe(Webhooks::Shopify::OrderController, type: :controller) do
 
           last_jobs = SlackNotificationJob.jobs.last(2)
           expect(last_jobs[0]["args"]).to(eq([ "User created without ShopifyID hello@fresh.com" ]))
-          expect(last_jobs[1]["args"]).to(eq([ "Order fulfilled: hello@fresh.com, id 6683595997448, sku 02" ]))
+          expect(last_jobs[1]["args"]).to(eq([ "Order fulfilled: hello@fresh.com, id 987654321098765432, sku 02" ]))
       end
 
       context 'with an existing customer' do
@@ -97,15 +97,15 @@ RSpec.describe(Webhooks::Shopify::OrderController, type: :controller) do
 
           user = User.last
           expect(user.email).to(eq('john@example.com'))
-          expect(user.shopify_id).to(eq("115310627314723954"))
+          expect(user.shopify_id).to(eq("11531064444443954"))
 
           order = Order.last
           expect(order.product_type).to(eq("02"))
           expect(order.quantity).to(eq(5))
 
           last_jobs = SlackNotificationJob.jobs.last(2)
-          expect(last_jobs[0]["args"]).to(eq([ "User created in Shopify: john@example.com, 115310627314723954" ]))
-          expect(last_jobs[1]["args"]).to(eq([ "Order fulfilled: john@example.com, id 6683595997448, sku 02" ]))
+          expect(last_jobs[0]["args"]).to(eq([ "User created in Shopify: john@example.com, 11531064444443954" ]))
+          expect(last_jobs[1]["args"]).to(eq([ "Order fulfilled: john@example.com, id 987654321098765432, sku 02" ]))
         end
       end
     end

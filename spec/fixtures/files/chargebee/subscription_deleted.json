@@ -40,8 +40,8 @@
       "exchange_rate": 1.0,
       "base_currency_code": "USD",
       "shipping_address": {
-        "first_name": "Benjamin",
-        "last_name": "Ross",
+        "first_name": "Manes",
+        "last_name": "Norws",
         "company": "Acme Inc",
         "phone": "+1 (614) 226-4809",
         "line1": "345, Redington Av",
@@ -56,9 +56,9 @@
     },
     "customer": {
       "id": "3Nl7oGgQqGFqO7H",
-      "first_name": "Joe",
-      "last_name": "Ross",
-      "email": "Benjamin@test.com",
+      "first_name": "Manes",
+      "last_name": "Norws",
+      "email": "test@example.com",
       "auto_collection": "on",
       "net_term_days": 0,
       "allow_direct_debit": false,
@@ -69,13 +69,13 @@
       "deleted": false,
       "object": "customer",
       "card_status": "valid",
-      "primary_payment_source_id": "pm_3Nl7oGgQqGFwl01o",
+      "primary_payment_source_id": "pm_3Nl3DDoGgQqGFwl01o",
       "payment_method": {
         "object": "payment_method",
         "type": "card",
-        "reference_id": "tok_3Nl7oGgQqGFwkl1n",
+        "reference_id": "tok_3NsdfFFwkl1n",
         "gateway": "chargebee",
-        "gateway_account_id": "gw_3Nl7oGgQqGFlba2",
+        "gateway_account_id": "gw_df222gdsba2",
         "status": "valid"
       },
       "balances": [{
