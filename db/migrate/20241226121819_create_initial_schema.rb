@@ -28,6 +28,7 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.string :address_2, default: ''
       t.string :city, default: ''
       t.string :state, default: ''
+      t.decimal :credits, precision: 8, scale: 6, null: false, default: 0.0
       t.integer :country, default: 0
       t.integer :phone_prefix, default: 0
       t.boolean :deactivated, default: false
@@ -57,8 +58,7 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.string :error_code
       t.references :user, null: false, foreign_key: true
       t.decimal :refund_amount, precision: 15, scale: 6
-      t.decimal :tax, precision: 15, scale: 6, null: false, default: 0.0
-      t.decimal :tax_percentage, precision: 5, scale: 6, null: false, default: 0.0
+      t.decimal :credits, precision: 8, scale: 6, null: false, default: 0.0
       t.timestamps
       t.index :payment_status
       t.index :provider

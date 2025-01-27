@@ -17,7 +17,7 @@ class User < ApplicationRecord
             allow_blank: true
 
   # DO NOT CHANGE, ONLY ADD
-  enum :role, [ :user, :company ]
+  enum :role, [ :consumer, :business ]
   enum :subscription_tree_type, [ :yemani, :mango_tree ]
   enum :subscription_type, [ :regular, :family, :company ]
   enum :subscription_status, [ :none, :active, :cancelled, :deleted ]
