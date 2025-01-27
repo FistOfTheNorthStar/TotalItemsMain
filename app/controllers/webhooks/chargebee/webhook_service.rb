@@ -49,7 +49,6 @@ module Webhooks
         user.save!
 
         SlackNotifier.notify("#subscriptions", "New subscription created for #{user.email}")
-        #UserMailer.subscription_created(user).deliver_later
       end
 
       def handle_subscription_cancelled
@@ -171,16 +170,7 @@ module Webhooks
         end
       end
 
-      def map_currency_code(code)
-        return 0 if code.blank?
 
-        {
-          'USD' => 1,
-          'EUR' => 2,
-          'GBP' => 3,
-          # Add more mappings as needed
-        }[code.upcase] || 0
-      end
 
       def self.map_billing_address(billing_address)
         return {} unless billing_address

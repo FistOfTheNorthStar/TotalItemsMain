@@ -37,6 +37,8 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.string :company_name, default: ''
       t.string :shopify_id, default: ''
       t.string :chargebee_id, default: ''
+      t.integer :subscription_type, null: false, default: 0
+      t.integer :subscription_status, null: false, default: 0
       t.integer :subscription_tree_type, null: false, default: 0
       t.integer :subscription_number_of_trees, null: false, default: 0
 

@@ -6,7 +6,6 @@ module Webhooks
       def handle
         event = params.permit!.to_h
         event_type = event["event_type"]
-
         WebhookService.new(event, event_type).process
 
         head :ok

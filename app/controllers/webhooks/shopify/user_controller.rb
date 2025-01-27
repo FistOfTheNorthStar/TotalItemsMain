@@ -22,7 +22,7 @@ module Webhooks
             phone: address&.dig("phone"),
             phone_prefix: PhonePrefixes::COUNTRIES[country_code][:code],
             state: address&.dig("province"),
-            role: address&.dig("company") ? :company : :user,
+            role: address&.dig("company") ? :business : :consumer,
             company_name: address&.dig("company")
           }
           User.create!(user_params.merge(shopify_id: data["id"].to_s))

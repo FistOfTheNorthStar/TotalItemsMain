@@ -14,6 +14,7 @@ RSpec.describe(Webhooks::Shopify::UserController, type: :controller) do
       .to_return(status: 200)
     request.headers["HTTP_X_SHOPIFY_HMAC_SHA256"] = hmac_header
     allow(controller).to(receive(:verify_webhook).and_return(true))
+
   end
 
   describe 'POST #create' do
@@ -37,7 +38,7 @@ RSpec.describe(Webhooks::Shopify::UserController, type: :controller) do
         }.to(change(SlackNotificationJob.jobs, :size).by(1))
 
         last_job = SlackNotificationJob.jobs.last
-        expect(last_job["args"]).to(eq([ "User created in Shopify: bob@biller.com" ]))
+        expect(last_job["args"]).to(eq([ "User created in Shopify: test@example.com" ]))
       end
 
       it 'enqueues a slack notification for user deleted' do

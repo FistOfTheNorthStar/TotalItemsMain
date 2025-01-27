@@ -1,13 +1,12 @@
 class Payment < ApplicationRecord
   belongs_to :user, optional: true
   validates :payment_status, presence: true
-  validates :amount, :tax, :tax_percentage, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :currency, presence: true
   validates :provider, :payment_status, presence: true
   validates :tax_inclusive, inclusion: { in: [ true, false ] }
 
   enum :provider, [ :chargebee, :invoice, :bank, :cash, :other ]
-  enum :payment_status, [ :pending, :order_created, :completed, :failed, :refund_started, :refund_succeeded, :refund_failed ]
+  enum :payment_status, [ :pending, :order_created, :completed, :failed, :refunded ]
 
   scope :completed, -> { where(payment_status: :completed) }
   scope :refunded, -> { where(payment_status: :refunded) }
