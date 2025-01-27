@@ -4,12 +4,8 @@ require 'webmock/rspec'
 RSpec.describe(Webhooks::Shopify::OrderController, type: :controller) do
   let(:order_cancelled) { File.read(Rails.root.join("spec", "fixtures", "shopify", "order_cancelled.json")) }
   let(:order_refunded) { File.read(Rails.root.join("spec", "fixtures", "shopify", "order_refunded.json")) }
-  #let(:order_fulfilled) { File.read(Rails.root.join("spec", "fixtures", "shopify", "order_fulfilled.json")) }
   let(:hmac_header) { "dummy_hmac" }
   let(:order_fulfilled_customer_raw_post_data) { file_fixture('shopify/order_fulfilled_customer.json').read }
-
-  # let(:created_parsed_data) { JSON.parse(created_raw_post_data, symbolize_names: true) }
-  # let(:deleted_raw_post_data) { file_fixture('shopify/user_deleted.json').read }
 
   before do
     WebMock.disable_net_connect!(allow_localhost: true)
@@ -57,7 +53,7 @@ RSpec.describe(Webhooks::Shopify::OrderController, type: :controller) do
           expect(response).to(have_http_status(:ok))
 
           user = User.last
-          expect(user.email).to(eq('hello@fresh.com'))
+          expect(user.email).to(eq('test@example.com'))
           expect(user.shopify_id).to(eq(""))
 
           order = Order.last
@@ -65,13 +61,13 @@ RSpec.describe(Webhooks::Shopify::OrderController, type: :controller) do
           expect(order.quantity).to(eq(5))
 
           last_jobs = SlackNotificationJob.jobs.last(2)
-          expect(last_jobs[0]["args"]).to(eq([ "User created without ShopifyID hello@fresh.com" ]))
-          expect(last_jobs[1]["args"]).to(eq([ "Order fulfilled: hello@fresh.com, id 987654321098765432, sku 02" ]))
+          expect(last_jobs[0]["args"]).to(eq([ "User created without ShopifyID test@example.com" ]))
+          expect(last_jobs[1]["args"]).to(eq([ "Order fulfilled: test@example.com, id 987654321098765432, sku 02, q 5" ]))
       end
 
       context 'with an existing customer' do
         it 'creates order with customer' do
-          create(:user, email: 'hello@fresh.com')
+          create(:user, email: 'test@example.com')
 
           expect {
             post(:fulfill, body: order_fulfilled_no_customer_raw_post_data)
@@ -96,7 +92,7 @@ RSpec.describe(Webhooks::Shopify::OrderController, type: :controller) do
           expect(response).to(have_http_status(:ok))
 
           user = User.last
-          expect(user.email).to(eq('john@example.com'))
+          expect(user.email).to(eq('test@example.com'))
           expect(user.shopify_id).to(eq("11531064444443954"))
 
           order = Order.last
@@ -104,15 +100,15 @@ RSpec.describe(Webhooks::Shopify::OrderController, type: :controller) do
           expect(order.quantity).to(eq(5))
 
           last_jobs = SlackNotificationJob.jobs.last(2)
-          expect(last_jobs[0]["args"]).to(eq([ "User created in Shopify: john@example.com, 11531064444443954" ]))
-          expect(last_jobs[1]["args"]).to(eq([ "Order fulfilled: john@example.com, id 987654321098765432, sku 02" ]))
+          expect(last_jobs[0]["args"]).to(eq([ "User created in Shopify: test@example.com, 11531064444443954" ]))
+          expect(last_jobs[1]["args"]).to(eq([ "Order fulfilled: test@example.com, id 987654321098765432, sku 02, q 5" ]))
         end
       end
     end
 
     context 'with an existing customer' do
       it 'creates order' do
-        create(:user, email: 'john@example.com')
+        create(:user, email: 'test@example.com')
 
         expect {
           post(:fulfill, body: order_fulfilled_customer_raw_post_data)
