@@ -234,7 +234,11 @@
       "mrr": 1000,
       "exchange_rate": 1.0,
       "base_currency_code": "EUR",
-      "has_scheduled_advance_invoices": false
+      "has_scheduled_advance_invoices": false,
+      "metadata": {
+        "trees_per_year": 30,
+        "type": "gift"
+      }
     }
   },
   "event_type": "payment_succeeded",
