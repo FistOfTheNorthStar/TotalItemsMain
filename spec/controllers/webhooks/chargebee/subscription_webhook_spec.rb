@@ -90,9 +90,20 @@ RSpec.describe(Webhooks::Chargebee::WebhookController, type: :controller) do
 
     context 'when processing fails' do
       it 'handles errors gracefully' do
-        allow_any_instance_of(Webhooks::Chargebee::WebhookService).to(receive(:process).and_raise(StandardError.new('Processing failed')))
+        # Create an instance double for WebhookService
+        webhook_service = instance_double(Webhooks::Chargebee::WebhookService)
+
+        # Stub the .new method to return the instance double
+        allow(Webhooks::Chargebee::WebhookService).to(receive(:new).and_return(webhook_service))
+
+        # Stub the #process method on the instance double to raise an error
+        allow(webhook_service).to(receive(:process).and_raise(StandardError.new('Processing failed')))
+
         post :handle, params: subscription_created_with_coupon_fixture, as: :json
         expect(response).to(have_http_status(:unprocessable_entity))
+        # allow_any_instance_of(Webhooks::Chargebee::WebhookService).to(receive(:process).and_raise(StandardError.new('Processing failed')))
+        #
+        # expect(response).to(have_http_status(:unprocessable_entity))
       end
     end
 

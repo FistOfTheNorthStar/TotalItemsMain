@@ -71,6 +71,7 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.integer :product_type, null: false, default: 0
       t.string :gift_email
       t.integer :order_status, null: false, default: 0
+      t.integer :tree_type, null: false, default: 0
       t.string :shopify_order_id, default: '', null: false
       t.string :shopify_product_id, default: '', null: false
       t.boolean :order_processed, default: false, null: false
