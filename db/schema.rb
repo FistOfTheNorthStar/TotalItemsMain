@@ -56,9 +56,10 @@ ActiveRecord::Schema[8.0].define(version: 2024_12_26_121819) do
     t.integer "quantity", default: 1, null: false
     t.integer "product_type", default: 0, null: false
     t.string "gift_email"
+    t.datetime "gifting_date"
     t.integer "order_status", default: 0, null: false
     t.integer "tree_type", default: 0, null: false
-    t.string "shopify_order_id", default: "", null: false
+    t.string "hook_order_id", default: "", null: false
     t.string "shopify_product_id", default: "", null: false
     t.boolean "order_processed", default: false, null: false
     t.bigint "user_id"

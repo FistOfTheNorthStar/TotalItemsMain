@@ -32,19 +32,18 @@ module Webhooks
       def handle_subscription_created
         subscription = @content["subscription"]
         customer = @content["customer"]
-        check_for_coupons(@content)
-        user = User.find_by(email: customer["email"])
-        p("Here is USER #{user}")
+        email = customer["email"]
+        user = User.find_by(email:)
         if user
           user.chargebee_id = customer["id"]
           user.save
-          SlackNotificationJob.perform_async("User exists but chargebee_id created or updated: #{customer["email"]}")
+          SlackNotificationJob.perform_async("User exists but chargebee_id created or updated: #{email}")
         else
           subscription_metadata = subscription["metadata"]
           address = customer["billing_address"]
           country_code = address&.dig("country")
           user_params = {
-            email: customer["email"],
+            email:,
             address_1:   address&.dig("line1"),
             address_2: "",
             city:        address&.dig("city"),
@@ -61,9 +60,10 @@ module Webhooks
             subscription_status: :active
           }
 
-          User.create!(user_params.merge(chargebee_id: customer["id"].to_s))
-          SlackNotificationJob.perform_async("User created a subscription in ChargeBee: #{customer['email']}")
+          user = User.create!(user_params.merge(chargebee_id: customer["id"].to_s))
+          SlackNotificationJob.perform_async("User created a subscription in ChargeBee: #{email}")
         end
+        check_for_coupons(@content, user)
       end
 
       def handle_subscription_cancelled
@@ -166,20 +166,94 @@ module Webhooks
 
       private
 
-      def check_for_coupons(data)
+      def check_for_coupons(data, user)
         coupon_metadata = data.dig("subscription", "coupons", 0, "metadata")
 
         if coupon_metadata
-          # Extract any keys you need within the coupon metadata
           tree_credits = coupon_metadata["tree_credits"]
           tree_type    = coupon_metadata["tree_type"]
+
+          order_params={}
+          create_coupon_order(order_params, tree_credits, tree_type, user)
 
           puts("Coupon Metadata:")
           puts("- tree_credits: #{tree_credits}")
           puts("- tree_type:    #{tree_type}")
-        else
-          puts("Coupon Metadata NOT PRESENT")
         end
+      end
+
+
+      def create_coupon_order(order_params, tree_credits, tree_type, user)
+
+        return if Order.find_by(hook_order_id: user.chargebee_id)
+        order = Order.new(hook_order_id: user.chargebee_id)
+        email_and_user_id = find_or_create_user(webhook_data)
+
+        order.assign_attributes(
+          quantity: tree_credits,
+          order_status: :fulfilled,
+          product_type: "na",
+          user_id: user.id,
+          order_completed_date: webhook_data["closed_at"],
+          tree_type:
+        )
+
+        if order.save
+          SlackNotificationJob.perform_async(
+            "Order fulfilled: #{email_and_user_id[:email]}, id #{webhook_data['id']}, " \
+              "sku #{product_sku}, q #{quantity}"
+          )
+          head(:ok)
+        else
+          head(:unprocessable_entity)
+        end
+      rescue JSON::ParserError
+        head(:bad_request)
+      end
+
+
+
+
+
+      def create_coupon_order(order_params, email, tree_credits
+        webhook_data = JSON.parse(request.raw_post)
+        return head(:ok) unless webhook_data["fulfillment_status"] == "fulfilled"
+        return head(:ok) if Order.find_by(hook_order_id: webhook_data["id"])
+
+        order = Order.new(hook_order_id: webhook_data["id"])
+        product_sku = webhook_data["line_items"].first["sku"]
+
+        tree_type = :no_tree
+
+        if product_sku.present? && VALID_SKUS.include?(product_sku)
+          tree_type = :yemani
+          order_status = :fulfilled
+        else
+          order_status = :finished
+        end
+
+        quantity = webhook_data["line_items"].sum { |item| item["quantity"] }
+        email_and_user_id = find_or_create_user(webhook_data)
+
+        order.assign_attributes(
+          quantity:,
+          order_status:,
+          product_type: product_sku,
+          user_id: email_and_user_id[:id],
+          order_completed_date: webhook_data["closed_at"],
+          tree_type:
+        )
+
+        if order.save
+          SlackNotificationJob.perform_async(
+            "Coupon order created: #{email}, tree creds #{webhook_data['id']}, " \
+              "sku #{product_sku}, q #{quantity}"
+          )
+        else
+          SlackNotificationJob.perform_async("Coupon order creation failed: #{email}")
+        end
+      rescue JSON::ParserError
+        head(:bad_request)
       end
     end
   end
