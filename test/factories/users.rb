@@ -14,10 +14,11 @@ FactoryBot.define do
     state { "ON" }
     country { 0 }
     phone_prefix { 0 }
-    role { :user }
+    role { :consumer }
+    shopify_id { "" }
 
-    trait :company do
-      role { :company }
+    trait :business do
+      role { :business }
       company_name { "Test Company" }
     end
 

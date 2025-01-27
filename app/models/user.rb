@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   include PhonePrefixes
   include CountryPrefixEmailValidation
+
   self.sanitized_fields += %w[ company_name vat_number ]
 
   has_many :orders
@@ -20,5 +21,5 @@ class User < ApplicationRecord
   enum :role, [ :consumer, :business ]
   enum :subscription_tree_type, [ :yemani, :mango_tree ]
   enum :subscription_type, [ :regular, :family, :company ]
-  enum :subscription_status, [ :none, :active, :cancelled, :deleted ]
+  enum :subscription_status, [ :inactive, :active, :cancelled, :deleted ]
 end
