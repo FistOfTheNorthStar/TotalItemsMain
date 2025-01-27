@@ -7,17 +7,17 @@ module Webhooks
       def handle
         event = parse_request_body
         WebhookService.new(event).process
-        head :ok
+        head(:ok)
       rescue => e
         Rails.logger.error("Chargebee Webhook Error: #{e.message}")
-        head :unprocessable_entity
+        head(:unprocessable_entity)
       end
 
       private
 
       def verify_chargebee_webhook
         unless authenticate
-          Rails.logger.warn('Chargebee webhook authentication failed')
+          Rails.logger.warn("Chargebee webhook authentication failed")
           head(:ok) and return # Return OK if authentication fails
         end
       end
@@ -29,8 +29,8 @@ module Webhooks
 
       def authenticate
         authenticate_with_http_basic do |username, password|
-          is_authenticated = ActiveSupport::SecurityUtils.secure_compare(username, ENV['CHARGEBEE_WEBHOOK_USERNAME']) &&
-            ActiveSupport::SecurityUtils.secure_compare(password, ENV['CHARGEBEE_WEBHOOK_PASSWORD'])
+          is_authenticated = ActiveSupport::SecurityUtils.secure_compare(username, ENV["CHARGEBEE_WEBHOOK_USERNAME"]) &&
+            ActiveSupport::SecurityUtils.secure_compare(password, ENV["CHARGEBEE_WEBHOOK_PASSWORD"])
           return true if is_authenticated
         end
         false
