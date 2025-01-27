@@ -1,15 +1,15 @@
 module Webhooks
   module Chargebee
     class WebhookService
-      attr_reader :event, :content
+      attr_reader :event
 
-      def initialize(event, content)
-        @event = event
-        @content = content
+      def initialize(event)
+        @event = event["event_type"]
+        @content = event["content"]
       end
 
       def process
-        case @event["event_type"]
+        case @event
         when "subscription_created"
           handle_subscription_created
         when "subscription_cancelled"
@@ -23,7 +23,7 @@ module Webhooks
         when "payment_refunded"
           handle_payment_refunded
         else
-          Rails.logger.info("Unhandled Chargebee event: #{@event['event_type']}")
+          Rails.logger.info("Unhandled Chargebee event: #{@event}")
         end
       end
 
@@ -32,23 +32,38 @@ module Webhooks
       def handle_subscription_created
         subscription = @content["subscription"]
         customer = @content["customer"]
-        billing_address = @content["customer"]&.dig("billing_address")
+        check_for_coupons(@content)
+        user = User.find_by(email: customer["email"])
+        p "Here is USER #{user}"
+        if user
+          user.chargebee_id = customer["id"]
+          user.save
+          SlackNotificationJob.perform_async("User exists but chargebee_id created or updated: #{customer["email"]}")
+        else
+          subscription_metadata = subscription["metadata"]
+          address = customer["billing_address"]
+          country_code = address&.dig("country")
+          user_params = {
+            email: customer["email"],
+            address_1:   address&.dig("line1"),
+            address_2: "",
+            city:        address&.dig("city"),
+            state:       address&.dig("state"),
+            country:     country_code ? PhonePrefixes::COUNTRIES[country_code][:code] : nil,  # Or map to your internal code if you wish
+            first_name:  address&.dig("first_name"),
+            last_name:   address&.dig("last_name"),
+            phone:       address&.dig("phone"),
+            phone_prefix: country_code ? PhonePrefixes::COUNTRIES[country_code][:code] : nil,
+            company_name: address&.dig("company") || "",
+            subscription_number_of_trees: subscription_metadata&.dig("tree_credits") || 1,
+            subscription_tree_type: subscription_metadata&.dig("tree_type")&.to_sym || :yemani,
+            subscription_type:  subscription_metadata&.dig("subscription_type") || :regular,
+            subscription_status: :active
+          }
 
-        # Find or create user
-        user = User.find_or_initialize_by(chargebee_id: customer["id"])
-
-        subscription_data = extract_subscription_data(subscription)
-        user_data = {
-          email: customer["email"],
-          first_name: customer["first_name"],
-          last_name: customer["last_name"]
-        }.merge(self.class.map_billing_address(billing_address))
-         .merge(subscription_data)
-
-        user.assign_attributes(user_data)
-        user.save!
-
-        SlackNotifier.notify("#subscriptions", "New subscription created for #{user.email}")
+          User.create!(user_params.merge(chargebee_id: customer["id"].to_s))
+          SlackNotificationJob.perform_async("User created a subscription in ChargeBee: #{customer['email']}")
+        end
       end
 
       def handle_subscription_cancelled
@@ -56,8 +71,8 @@ module Webhooks
         user = User.find_by(email: customer["email"])
         return unless user&.chargebee_id
 
-        user.update!( subscription_status: :cancelled)
-        SlackNotificationJob.perform_async("Subscription cancelled for #{user.email}")
+        user.update!(subscription_status: :cancelled)
+        SlackNotificationJob.perform_async("Chargebee subscription cancelled for #{user.email}")
       end
 
       def handle_subscription_deleted
@@ -65,8 +80,8 @@ module Webhooks
         user = User.find_by(email: customer["email"])
         return unless user&.chargebee_id
 
-        user.update!( subscription_status: :deleted)
-        SlackNotificationJob.perform_async("Subscription deleted for #{user.email}")
+        user.update!(subscription_status: :deleted)
+        SlackNotificationJob.perform_async("Chargebee subscription deleted for #{user.email}")
       end
 
       def handle_payment_succeeded
@@ -151,50 +166,20 @@ module Webhooks
 
       private
 
-      def extract_subscription_data(subscription)
-        {
-          subscription_tree_type: map_subscription_type(subscription["plan_id"]),
-          subscription_renew_date: subscription["current_term_end"],
-          subscription_number_of_trees: subscription["plan_quantity"] || 0
-        }
-      end
+      def check_for_coupons(data)
+        coupon_metadata = data.dig("subscription", "coupons", 0, "metadata")
 
-      def map_subscription_type(plan_id)
-        case plan_id
-        when /monthly/i
-          1
-        when /yearly/i
-          2
+        if coupon_metadata
+          # Extract any keys you need within the coupon metadata
+          tree_credits = coupon_metadata["tree_credits"]
+          tree_type    = coupon_metadata["tree_type"]
+
+          puts "Coupon Metadata:"
+          puts "- tree_credits: #{tree_credits}"
+          puts "- tree_type:    #{tree_type}"
         else
-          0
+          puts "Coupon Metadata NOT PRESENT"
         end
-      end
-
-
-
-      def self.map_billing_address(billing_address)
-        return {} unless billing_address
-
-        {
-          address_1: billing_address["line1"],
-          address_2: billing_address["line2"],
-          city: billing_address["city"],
-          state: billing_address["state"],
-          country: map_country_code(billing_address["country"]),
-          phone: billing_address["phone"],
-          company_name: billing_address["company"]
-        }
-      end
-
-      def self.map_country_code(code)
-        return 0 if code.blank?
-
-        {
-          'US' => 1,
-          'GB' => 2,
-          'FR' => 3,
-          # Add more mappings as needed
-        }[code] || 0
       end
     end
   end

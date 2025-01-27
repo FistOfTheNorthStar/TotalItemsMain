@@ -18,10 +18,16 @@
           "discount_amount": 1000,
           "duration_type": "forever",
           "metadata": {
-            "tree_credits": 3
+            "tree_credits": 3,
+            "tree_type": "yemani"
           }
         }
       ],
+      "metadata": {
+        "tree_credits": 3,
+        "tree_type": "yemani",
+        "subscription_type": "family"
+      },
       "current_term_start": 1729200078,
       "current_term_end": 1731882078,
       "next_billing_at": 1731882078,

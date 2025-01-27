@@ -1,13 +1,12 @@
 module Webhooks
   module Chargebee
     class WebhookController < ApplicationController
+      skip_forgery_protection
       before_action :verify_chargebee_webhook
 
       def handle
-        event = params.permit!.to_h
-        event_type = event["event_type"]
-        WebhookService.new(event, event_type).process
-
+        event = parse_request_body
+        WebhookService.new(event).process
         head :ok
       rescue => e
         Rails.logger.error("Chargebee Webhook Error: #{e.message}")
@@ -17,14 +16,24 @@ module Webhooks
       private
 
       def verify_chargebee_webhook
-        head(:ok) unless authenticate # no point in retrying if authenticqtio fails
+        unless authenticate
+          Rails.logger.warn('Chargebee webhook authentication failed')
+          head(:ok) and return # Return OK if authentication fails
+        end
+      end
+
+      def parse_request_body
+        raw_body = request.raw_post
+        JSON.parse(raw_body)
       end
 
       def authenticate
-        authenticate_or_request_with_http_basic do |username, password|
-          ActiveSupport::SecurityUtils.secure_compare(username, CHARGEBEE_WEBHOOK_USERNAME) &
-            ActiveSupport::SecurityUtils.secure_compare(password, CHARGEBEE_WEBHOOK_PASSWORD)
+        authenticate_with_http_basic do |username, password|
+          is_authenticated = ActiveSupport::SecurityUtils.secure_compare(username, ENV['CHARGEBEE_WEBHOOK_USERNAME']) &&
+            ActiveSupport::SecurityUtils.secure_compare(password, ENV['CHARGEBEE_WEBHOOK_PASSWORD'])
+          return true if is_authenticated
         end
+        false
       end
     end
   end
