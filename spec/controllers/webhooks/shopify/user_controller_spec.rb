@@ -14,7 +14,6 @@ RSpec.describe(Webhooks::Shopify::UserController, type: :controller) do
       .to_return(status: 200)
     request.headers["HTTP_X_SHOPIFY_HMAC_SHA256"] = hmac_header
     allow(controller).to(receive(:verify_webhook).and_return(true))
-
   end
 
   describe 'POST #create' do

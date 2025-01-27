@@ -16,7 +16,7 @@ Rails.application.routes.draw do
     end
 
     namespace :chargebee do
-      post 'handle', to: 'webhook#handle'
+      post "handle", to: "webhook#handle"
     end
   end
 

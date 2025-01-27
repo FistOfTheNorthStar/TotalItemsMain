@@ -34,7 +34,7 @@ module Webhooks
         customer = @content["customer"]
         check_for_coupons(@content)
         user = User.find_by(email: customer["email"])
-        p "Here is USER #{user}"
+        p("Here is USER #{user}")
         if user
           user.chargebee_id = customer["id"]
           user.save
@@ -174,11 +174,11 @@ module Webhooks
           tree_credits = coupon_metadata["tree_credits"]
           tree_type    = coupon_metadata["tree_type"]
 
-          puts "Coupon Metadata:"
-          puts "- tree_credits: #{tree_credits}"
-          puts "- tree_type:    #{tree_type}"
+          puts("Coupon Metadata:")
+          puts("- tree_credits: #{tree_credits}")
+          puts("- tree_type:    #{tree_type}")
         else
-          puts "Coupon Metadata NOT PRESENT"
+          puts("Coupon Metadata NOT PRESENT")
         end
       end
     end
