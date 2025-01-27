@@ -1,0 +1,106 @@
+{
+  "id": 345434543454345,
+  "admin_graphql_api_id": "gid://shopify/Order/345434543454345",
+  "app_id": 5345671,
+  "browser_ip": "82.59.34.21",
+  "buyer_accepts_marketing": false,
+  "cancel_reason": null,
+  "cancelled_at": null,
+  "cart_token": "",
+  "checkout_id": 4333333353736,
+  "checkout_token": "",
+  "client_details": {
+    "accept_language": "en-NL",
+    "browser_height": null,
+    "browser_ip": "55.59.31.21",
+    "browser_width": null,
+    "session_hash": null,
+    "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15"
+  },
+  "closed_at": "2025-01-27T13:19:37-05:00",
+  "confirmation_number": "Z8914Z5VQ",
+  "confirmed": true,
+  "contact_email": "",
+  "created_at": "2025-01-27T13:17:49-05:00",
+  "currency": "EUR",
+  "current_subtotal_price": "10.00",
+  "customer_locale": "en-NL",
+  "financial_status": "paid",
+  "fulfillment_status": "fulfilled",
+  "note_attributes": [
+    {
+      "name": "Recipient_Name",
+      "value": "kaarloppi"
+    },
+    {
+      "name": "Recipient_Email",
+      "value": "nothanks@gmail.com"
+    },
+    {
+      "name": "Gift_Message",
+      "value": "Hello beautiful. The eagle flies highest."
+    },
+    {
+      "name": "Sender_Name",
+      "value": "leppa vaara"
+    },
+    {
+      "name": "Sender_Email",
+      "value": "depa@jepa.com"
+    }
+  ],
+  "billing_address": {
+    "first_name": "Fedde",
+    "address1": "Stadhouderskade 78",
+    "phone": null,
+    "city": "Amsterdam",
+    "zip": "1072 AE",
+    "province": null,
+    "country": "Netherlands",
+    "last_name": "Dorian",
+    "address2": null,
+    "company": null,
+    "latitude": 52.123769900999,
+    "longitude": 4.55555555,
+    "name": "fedde dorian",
+    "country_code": "NL",
+    "province_code": null
+  },
+  "line_items": [
+    {
+      "id": 1603323456,
+      "admin_graphql_api_id": "gid://shopify/LineItem/1603323456",
+      "fulfillable_quantity": 0,
+      "fulfillment_service": "manual",
+      "fulfillment_status": "fulfilled",
+      "gift_card": false,
+      "grams": 0,
+      "name": "Tree for gift",
+      "price": "10.00",
+      "price_set": {
+        "shop_money": {
+          "amount": "10.00",
+          "currency_code": "EUR"
+        },
+        "presentment_money": {
+          "amount": "10.00",
+          "currency_code": "EUR"
+        }
+      },
+      "product_exists": true,
+      "product_id": 8765432,
+      "properties": [],
+      "quantity": 1,
+      "requires_shipping": false,
+      "sku": "01",
+      "taxable": false,
+      "title": "Tree for gift",
+      "total_discount": "0.00",
+      "variant_id": 456789876543,
+      "variant_title": null,
+      "vendor": "Test-PlantEnBoom"
+    }
+  ],
+  "total_price": "10.00",
+  "total_tax": "0.00"
+}
