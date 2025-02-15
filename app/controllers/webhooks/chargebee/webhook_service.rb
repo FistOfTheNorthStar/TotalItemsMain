@@ -34,6 +34,82 @@ module Webhooks
         customer = @content["customer"]
         email = customer["email"]
         user = User.find_by(email:)
+
+        subscription_metadata = subscription["metadata"]
+        user_params = build_user_params(customer, subscription_metadata)
+
+        if user
+          user.update!(user_params.merge(chargebee_id: customer["id"]))
+          SlackNotificationJob.perform_async("User exists but chargebee_id created or updated: #{email}")
+        else
+          user = User.create!(user_params.merge(chargebee_id: customer["id"].to_s))
+          SlackNotificationJob.perform_async("User created a subscription in ChargeBee: #{email}")
+        end
+
+        check_for_coupons(@content, user)
+      end
+
+      def build_user_params(customer, subscription_metadata)
+        address = customer["billing_address"]
+        country_code = address&.dig("country")
+
+        {
+          email: customer["email"],
+          address_1: address&.dig("line1"),
+          address_2: "",
+          city: address&.dig("city"),
+          state: address&.dig("state"),
+          country: country_code ? PhonePrefixes::COUNTRIES[country_code][:code] : nil,
+          first_name: address&.dig("first_name"),
+          last_name: address&.dig("last_name"),
+          phone: address&.dig("phone"),
+          phone_prefix: country_code ? PhonePrefixes::COUNTRIES[country_code][:code] : nil,
+          company_name: address&.dig("company") || "",
+          subscription_number_of_trees: subscription_metadata&.dig("trees_per_year") || 1,
+          subscription_tree_type: map_tree_type(subscription_metadata&.dig("tree_type")),
+          subscription_type: map_subscription_type(subscription_metadata&.dig("type")),
+          subscription_status: :active
+        }
+      end
+
+      def map_subscription_type(type)
+        return :regular unless type.present?
+
+        case type.downcase
+        when 'gift'
+          :gift
+        when 'family'
+          :family
+        else
+          :regular
+        end
+      end
+
+      def map_tree_type(tree_type)
+        return :yemani unless tree_type.present?
+        
+        tree_type.to_sym
+      rescue
+        :yemani
+      end
+
+      def check_for_coupons(data, user)
+        return unless data["subscription"] && data["subscription"]["coupons"].present?
+
+        coupon = data["subscription"]["coupons"].first
+        return unless coupon && coupon["metadata"]
+
+        tree_credits = coupon["metadata"]["tree_credits"]
+        tree_type = coupon["metadata"]["tree_type"]
+
+        create_coupon_order(user, tree_credits, tree_type)
+      end
+
+      def handle_subscription_created
+        subscription = @content["subscription"]
+        customer = @content["customer"]
+        email = customer["email"]
+        user = User.find_by(email:)
         if user
           user.chargebee_id = customer["id"]
           user.save
