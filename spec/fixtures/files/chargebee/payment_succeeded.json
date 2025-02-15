@@ -237,7 +237,8 @@
       "has_scheduled_advance_invoices": false,
       "metadata": {
         "trees_per_year": 30,
-        "type": "gift"
+        "subscription_type": "gift",
+        "tree_type": "yemani"
       }
     }
   },
