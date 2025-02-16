@@ -48,24 +48,6 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.index :shopify_id
     end
 
-    create_table :payments do |t|
-      t.decimal :amount, precision: 15, scale: 6, null: false, default: 0.0
-      t.integer :currency, null: false, default: 0
-      t.integer :provider, null: false, default: 0
-      t.integer :payment_status, null: false, default: 0
-      t.string :token
-      t.datetime :payment_confirmed_date
-      t.string :provider_confirmation_id
-      t.text :error
-      t.string :error_code
-      t.references :user, null: false, foreign_key: true
-      t.decimal :refund_amount, precision: 15, scale: 6
-      t.decimal :credits, precision: 8, scale: 6, null: false, default: 0.0
-      t.timestamps
-      t.index :payment_status
-      t.index :provider
-    end
-
     create_table :orders do |t|
       t.integer :quantity, null: false, default: 1
       t.integer :product_type, null: false, default: 0

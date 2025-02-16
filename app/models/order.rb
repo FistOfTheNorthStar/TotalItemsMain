@@ -1,7 +1,6 @@
 class Order < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :subscription, optional: true
-  belongs_to :payment, optional: true
 
   validates :quantity, :order_status, :product_type, presence: true
   validates :quantity, numericality: { greater_than_or_equal_to: 0 }
