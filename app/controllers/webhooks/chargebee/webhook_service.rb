@@ -196,9 +196,9 @@ module Webhooks
         return :regular unless type.present?
 
         case type.downcase
-        when 'gift'
+        when "gift"
           :gift
-        when 'family'
+        when "family"
           :family
         else
           :regular
@@ -207,7 +207,7 @@ module Webhooks
 
       def map_tree_type(tree_type)
         return :yemani unless tree_type.present?
-        
+
         tree_type.to_sym
       rescue
         :yemani

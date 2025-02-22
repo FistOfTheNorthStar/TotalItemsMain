@@ -19,6 +19,9 @@ gem "clockwork", require: false
 gem "administrate"
 gem "administrate-field-active_storage", "~> 1.0"
 
+gem "prawn"
+gem "mini_magick"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 
