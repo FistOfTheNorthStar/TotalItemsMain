@@ -59,7 +59,6 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.string :shopify_product_id, default: '', null: false
       t.boolean :order_processed, default: false, null: false
       t.references :user, foreign_key: true
-      t.references :payment, foreign_key: true  # Added reference to payment
       t.datetime :order_completed_date
       t.timestamps
       t.index :order_status
@@ -70,7 +69,6 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
     create_table :trees do |t|
       t.string :name
       t.text :description
-      t.decimal :price, precision: 15, scale: 6, null: false, default: 0.0
       t.boolean :show_price, null: false, default: true
       t.integer :currency, null: false, default: 0
       t.decimal "gps_longitude", precision: 11, scale: 8
@@ -83,9 +81,6 @@ class CreateInitialSchema < ActiveRecord::Migration[8.0]
       t.string :new_user_sha256
       t.integer :tree_state, null: false, default: 0
       t.references :user, foreign_key: true
-      t.decimal :tax, precision: 15, scale: 6, null: false, default: 0.0
-      t.decimal :tax_percentage, precision: 5, scale: 6, null: false, default: 0.0
-      t.boolean :tax_inclusive, null: false, default: true
       t.timestamps
     end
   end
