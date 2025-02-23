@@ -187,9 +187,26 @@ module Webhooks
         head(:bad_request)
       end
 
+      def map_subscription_type(type)
+        return :regular unless type.present?
+
+        case type.downcase
+        when "gift"
+          :gift
+        when "family"
+          :family
+        else
+          :regular
+        end
+      end
 
 
-
+      def map_tree_type(tree_type)
+        return :yemani unless tree_type.present?
+        tree_type.to_sym
+      rescue
+        :yemani
+      end
 
       def create_coupon_order(order_params, email, tree_credits
         webhook_data = JSON.parse(request.raw_post)
