@@ -2,21 +2,22 @@ class AllocateTreesJob
     include Sidekiq::Job
 
     sidekiq_options queue: :default, retry: 3
-
+  
     def perform(order_id)
       order = Order.find_by(id: order_id)
       return unless order
-
+  
       begin
         ActiveRecord::Base.transaction do
           trees_to_allocate = order.quantity.floor # Only allocate whole trees
-
+  
           trees_to_allocate.times do
             create_tree_for_order(order)
           end
-
+  
           # If there are fractional credits, they remain in the user's balance
           order.update!(order_processed: true)
+  
 
           SlackNotificationJob.perform_async(
             "AllocateTreesJob: Allocated #{trees_to_allocate} trees for Order ##{order.id} (User: #{order.user.email})"

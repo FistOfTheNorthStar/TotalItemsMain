@@ -181,36 +181,55 @@ module Webhooks
             "tree type: #{tree_type}"
           )
         else
-          SlackNotificationJob.perform_async(
-            "Failed to create coupon order for user: #{user.email}"
-          )
+          head(:unprocessable_entity)
         end
-      rescue => e
-        Rails.logger.error("Error creating coupon order: #{e.message}")
-        SlackNotificationJob.perform_async(
-          "Error creating coupon order for #{user.email}: #{e.message}"
-        )
+      rescue JSON::ParserError
+        head(:bad_request)
       end
 
-      def map_subscription_type(type)
-        return :regular unless type.present?
 
-        case type.downcase
-        when "gift"
-          :gift
-        when "family"
-          :family
+
+
+
+      def create_coupon_order(order_params, email, tree_credits
+        webhook_data = JSON.parse(request.raw_post)
+        return head(:ok) unless webhook_data["fulfillment_status"] == "fulfilled"
+        return head(:ok) if Order.find_by(hook_order_id: webhook_data["id"])
+
+        order = Order.new(hook_order_id: webhook_data["id"])
+        product_sku = webhook_data["line_items"].first["sku"]
+
+        tree_type = :no_tree
+
+        if product_sku.present? && VALID_SKUS.include?(product_sku)
+          tree_type = :yemani
+          order_status = :fulfilled
         else
-          :regular
+          order_status = :finished
         end
-      end
 
-      def map_tree_type(tree_type)
-        return :yemani unless tree_type.present?
+        quantity = webhook_data["line_items"].sum { |item| item["quantity"] }
+        email_and_user_id = find_or_create_user(webhook_data)
 
-        tree_type.to_sym
-      rescue
-        :yemani
+        order.assign_attributes(
+          quantity:,
+          order_status:,
+          product_type: product_sku,
+          user_id: email_and_user_id[:id],
+          order_completed_date: webhook_data["closed_at"],
+          tree_type:
+        )
+
+        if order.save
+          SlackNotificationJob.perform_async(
+            "Coupon order created: #{email}, tree creds #{webhook_data['id']}, " \
+              "sku #{product_sku}, q #{quantity}"
+          )
+        else
+          SlackNotificationJob.perform_async("Coupon order creation failed: #{email}")
+        end
+      rescue JSON::ParserError
+        head(:bad_request)
       end
     end
   end
